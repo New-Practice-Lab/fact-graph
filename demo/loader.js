@@ -27,9 +27,12 @@ function getFact(event) {
   const form = event.target
   const path = form['get-fact'].value
 
-  let fact = factGraph.get(path)
-  console.log(fact)
-  document.querySelector('#fact-result').innerText = fact
+  let result = factGraph.get(path)
+  console.log('Object:', result)
+  let value = result.v || result.get || 'Incomplete'
+  console.log('Value:', value)
+
+  document.querySelector('#fact-result').innerText = value
 }
 
 function setFact(event) {
