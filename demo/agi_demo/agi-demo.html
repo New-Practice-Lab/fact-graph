@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AGI Calculator - Fact Graph Demo</title>
+    <script type="module" src="../fg.js?v=4"></script>
+    <script type="module" src="./agi-loader.js?v=4"></script>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+            line-height: 1.6;
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 2em;
+        }
+
+        .subtitle {
+            color: #7f8c8d;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        .container {
+            background: white;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            color: #34495e;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+
+        .form-section {
+            margin-bottom: 30px;
+        }
+
+        .form-section h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #2c3e50;
+        }
+
+        .help-text {
+            font-size: 0.85em;
+            color: #7f8c8d;
+            margin-bottom: 5px;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        input[type="date"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus,
+        input[type="number"]:focus,
+        input[type="date"]:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+
+        input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .checkbox-group label {
+            margin: 0;
+        }
+
+        button {
+            background-color: #3498db;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 4px;
+            font-size: 1em;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        button:active {
+            transform: translateY(1px);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .reset-button {
+            background-color: #95a5a6;
+        }
+
+        .reset-button:hover {
+            background-color: #7f8c8d;
+        }
+
+        #error {
+            background-color: #fee;
+            border: 1px solid #fcc;
+            color: #c33;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        #error.show {
+            display: block;
+        }
+
+        #results {
+            display: none;
+        }
+
+        #results.show {
+            display: block;
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px;
+            margin-bottom: 10px;
+            background-color: #ecf0f1;
+            border-radius: 4px;
+            border-left: 4px solid #3498db;
+        }
+
+        .result-label {
+            font-weight: 500;
+            color: #2c3e50;
+        }
+
+        .result-value {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .result-value.highlight {
+            font-size: 1.3em;
+            color: #27ae60;
+        }
+
+        .result-value.negative {
+            color: #e74c3c;
+        }
+
+        .result-value.boolean-true {
+            color: #27ae60;
+        }
+
+        .result-value.boolean-false {
+            color: #e74c3c;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .info-box {
+            background-color: #e8f4f8;
+            border-left: 4px solid #3498db;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+
+        .info-box h4 {
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .info-box p {
+            color: #5a6c7d;
+            font-size: 0.95em;
+        }
+
+        #graph-json {
+            display: none;
+        }
+
+        #graph-json.show {
+            display: block;
+        }
+
+        pre {
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-size: 0.9em;
+        }
+
+        .toggle-button {
+            background-color: #95a5a6;
+            padding: 8px 15px;
+            font-size: 0.9em;
+        }
+
+        .toggle-button:hover {
+            background-color: #7f8c8d;
+        }
+    </style>
+</head>
+<body>
+    <h1>Demo: Adjusted Gross Income Calculator</h1>
+    <p class="subtitle">Calculate your AGI and eligibility for Direct File</p>
+
+    <div id="error"></div>
+
+    <div class="container">
+        <div class="info-box">
+            <h4>About This Calculator</h4>
+            <p>This demo uses the Fact Graph engine to calculate your Adjusted Gross Income (AGI) based on your income sources and adjustments. It also determines your eligibility for Direct File based on age and citizenship.</p>
+        </div>
+
+        <form id="agi-form">
+            <div class="form-section">
+                <h3>Income Sources</h3>
+
+                <div class="form-group">
+                    <label for="totalWages">Total Wages (W-2 Income)</label>
+                    <div class="help-text">Enter your total wages from all W-2 forms</div>
+                    <input type="number" id="totalWages" name="totalWages" step="0.01" min="0" placeholder="0.00">
+                </div>
+
+                <div class="form-group">
+                    <label for="totalInterestIncome">Total Interest Income</label>
+                    <div class="help-text">Interest earned from savings accounts, bonds, etc.</div>
+                    <input type="number" id="totalInterestIncome" name="totalInterestIncome" step="0.01" min="0" placeholder="0.00">
+                </div>
+
+                <div class="form-group">
+                    <label for="total1099Income">Total 1099 Income</label>
+                    <div class="help-text">Income from freelance work, contractors, etc.</div>
+                    <input type="number" id="total1099Income" name="total1099Income" step="0.01" min="0" placeholder="0.00">
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3>Adjustments to Income</h3>
+
+                <div class="form-group">
+                    <label for="totalAdjustments">Total Adjustments</label>
+                    <div class="help-text">Deductions like student loan interest, IRA contributions, etc.</div>
+                    <input type="number" id="totalAdjustments" name="totalAdjustments" step="0.01" min="0" placeholder="0.00">
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3>Personal Information</h3>
+
+                <div class="form-group">
+                    <label for="dateOfBirth">Date of Birth</label>
+                    <div class="help-text">Your birth date (used to calculate age and eligibility)</div>
+                    <input type="date" id="dateOfBirth" name="dateOfBirth" required>
+                </div>
+
+                <div class="form-group checkbox-group">
+                    <input type="checkbox" id="isUsCitizen" name="isUsCitizen">
+                    <label for="isUsCitizen">I am a U.S. Citizen</label>
+                </div>
+            </div>
+
+            <div class="button-group">
+                <button type="submit">Calculate AGI</button>
+                <button type="button" class="reset-button" onclick="resetForm()">Reset Form</button>
+            </div>
+        </form>
+    </div>
+
+    <div id="results" class="container">
+        <h2>Results</h2>
+
+        <div class="result-item">
+            <span class="result-label">Adjusted Gross Income (AGI):</span>
+            <span class="result-value highlight" id="agi-value">$0.00</span>
+        </div>
+
+        <div class="result-item">
+            <span class="result-label">Your Age (as of tax year 2025):</span>
+            <span class="result-value" id="age-value">-</span>
+        </div>
+
+        <div class="result-item">
+            <span class="result-label">Age 16 or Older:</span>
+            <span class="result-value" id="age16-value">-</span>
+        </div>
+
+        <div class="result-item">
+            <span class="result-label">Eligible for Direct File:</span>
+            <span class="result-value" id="eligible-value">-</span>
+        </div>
+
+        <div class="button-group">
+            <button type="button" class="toggle-button" onclick="toggleGraphJson()">Show/Hide Graph JSON</button>
+        </div>
+
+        <div id="graph-json">
+            <h3 style="margin-top: 20px; margin-bottom: 10px;">Graph Data (JSON)</h3>
+            <pre id="graph-json-content"></pre>
+        </div>
+    </div>
+</body>
+</html>

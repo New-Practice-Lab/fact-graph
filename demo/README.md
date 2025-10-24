@@ -1,6 +1,17 @@
 # Fact Graph Demo
 
-This is a simple web-based demo for the Fact Graph JavaScript library.
+This directory contains web-based demos for the Fact Graph JavaScript library.
+
+## Available Demos
+
+1. **Generic Fact Graph Demo** (`generic_demo/index.html`) - Included in the IRS original repo,
+this is a general-purpose interface for loading any fact dictionary and manually setting/getting facts.
+
+2. **AGI Calculator Demo** (`agi_demo/agi-demo.html`) - An interactive calculator for computing Adjusted Gross Income with a user-friendly form. See [agi_demo/AGI-DEMO-README.md](./agi_demo/AGI-DEMO-README.md) for details.
+
+3. **EITC Eligibility Checker** (`eitc_demo/eitc-demo.html`) - Check eligibility for the Earned Income Tax Credit based on 2024 tax year rules. Demonstrates complex tax logic with income limits, age requirements, and filing status rules. See [eitc_demo/EITC-DEMO-README.md](./eitc_demo/EITC-DEMO-README.md) for details.
+
+4. **Dinner Check Splitter Demo** (`dinner_check_demo/dinner-check-demo.html`) - A fun bill-splitting calculator with birthday rules. Demonstrates how the same Fact Graph engine works for non-tax domains! See [dinner_check_demo/DINNER-CHECK-README.md](./dinner_check_demo/DINNER-CHECK-README.md) for details.
 
 ## How to Run
 
@@ -9,7 +20,11 @@ This is a simple web-based demo for the Fact Graph JavaScript library.
    python3 -m http.server 8000
    ```
 
-2. Open your browser to [http://localhost:8000/demo/index.html](http://localhost:8000/demo/index.html)
+2. Open your browser to:
+   - Generic demo: [http://localhost:8000/demo/generic_demo/index.html](http://localhost:8000/demo/generic_demo/index.html)
+   - AGI Calculator: [http://localhost:8000/demo/agi_demo/agi-demo.html](http://localhost:8000/demo/agi_demo/agi-demo.html)
+   - EITC Eligibility Checker: [http://localhost:8000/demo/eitc_demo/eitc-demo.html](http://localhost:8000/demo/eitc_demo/eitc-demo.html)
+   - Dinner Check Splitter: [http://localhost:8000/demo/dinner_check_demo/dinner-check-demo.html](http://localhost:8000/demo/dinner_check_demo/dinner-check-demo.html)
 
 ## How to Use
 

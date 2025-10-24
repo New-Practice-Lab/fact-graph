@@ -1,0 +1,224 @@
+<?xml-model href="./FactDictionaryModule.rng"?>
+<FactDictionaryModule>
+  <Facts>
+    <!-- User Inputs -->
+    <Fact path="/totalBill">
+      <Name>Total Bill Amount</Name>
+      <Description>The total dinner bill before splitting</Description>
+      <Writable>
+        <Dollar/>
+        <Limit type="Min">
+          <Dollar>0.00</Dollar>
+        </Limit>
+      </Writable>
+    </Fact>
+
+    <Fact path="/numPeople">
+      <Name>Number of People</Name>
+      <Description>Total number of people at dinner</Description>
+      <Writable>
+        <Int/>
+        <Limit type="Min">
+          <Int>1</Int>
+        </Limit>
+      </Writable>
+    </Fact>
+
+    <Fact path="/numBirthdayPeople">
+      <Name>Number of Birthday People</Name>
+      <Description>Number of people celebrating birthdays today</Description>
+      <Writable>
+        <Int/>
+        <Limit type="Min">
+          <Int>0</Int>
+        </Limit>
+      </Writable>
+    </Fact>
+
+    <Fact path="/isYourBirthday">
+      <Name>Is Today Your Birthday?</Name>
+      <Description>Whether today is the user's birthday</Description>
+      <Writable>
+        <Boolean/>
+      </Writable>
+    </Fact>
+
+    <Fact path="/otherBirthdayPeople">
+      <Name>Other People Celebrating Birthdays</Name>
+      <Description>Number of OTHER people (besides you) celebrating birthdays today</Description>
+      <Writable>
+        <Int/>
+        <Limit type="Min">
+          <Int>0</Int>
+        </Limit>
+      </Writable>
+    </Fact>
+
+    <!-- Derived: Total birthday people including user -->
+    <Fact path="/totalBirthdayPeople">
+      <Name>Total Birthday People</Name>
+      <Description>Total people celebrating birthdays (you + others)</Description>
+      <Derived>
+        <Switch>
+          <Case>
+            <When>
+              <Dependency path="/isYourBirthday" />
+            </When>
+            <Then>
+              <Add>
+                <Int>1</Int>
+                <Dependency path="/otherBirthdayPeople" />
+              </Add>
+            </Then>
+          </Case>
+          <Case>
+            <When>
+              <True/>
+            </When>
+            <Then>
+              <Dependency path="/otherBirthdayPeople" />
+            </Then>
+          </Case>
+        </Switch>
+      </Derived>
+    </Fact>
+
+    <!-- Derived: Number of people who will pay -->
+    <Fact path="/numPayingPeople">
+      <Name>Number of Paying People</Name>
+      <Description>Total people minus birthday people (who don't pay)</Description>
+      <Derived>
+        <Subtract>
+          <Minuend>
+            <Dependency path="/numPeople" />
+          </Minuend>
+          <Subtrahends>
+            <Dependency path="/totalBirthdayPeople" />
+          </Subtrahends>
+        </Subtract>
+      </Derived>
+    </Fact>
+
+    <!-- Derived: Per-person share before birthday rule -->
+    <Fact path="/perPersonShare">
+      <Name>Per-Person Share</Name>
+      <Description>Total bill divided by number of paying people</Description>
+      <Derived>
+        <Switch>
+          <!-- Case: If no one is paying, return 0 to avoid division by zero -->
+          <Case>
+            <When>
+              <LessThanOrEqual>
+                <Left>
+                  <Dependency path="/numPayingPeople" />
+                </Left>
+                <Right>
+                  <Int>0</Int>
+                </Right>
+              </LessThanOrEqual>
+            </When>
+            <Then>
+              <Dollar>0.00</Dollar>
+            </Then>
+          </Case>
+          <!-- Default: Normal division -->
+          <Case>
+            <When>
+              <True/>
+            </When>
+            <Then>
+              <Divide>
+                <Dividend>
+                  <Dependency path="/totalBill" />
+                </Dividend>
+                <Divisors>
+                  <Dependency path="/numPayingPeople" />
+                </Divisors>
+              </Divide>
+            </Then>
+          </Case>
+        </Switch>
+      </Derived>
+    </Fact>
+
+    <!-- Derived: User's share of the bill -->
+    <Fact path="/userShare">
+      <Name>Your Share</Name>
+      <Description>Amount you owe (0 if it's your birthday, otherwise split evenly)</Description>
+      <Derived>
+        <Switch>
+          <!-- Case 1: If it's your birthday, you pay nothing -->
+          <Case>
+            <When>
+              <Dependency path="/isYourBirthday" />
+            </When>
+            <Then>
+              <Dollar>0.00</Dollar>
+            </Then>
+          </Case>
+          <!-- Case 2: Otherwise, pay your share -->
+          <Case>
+            <When>
+              <True/>
+            </When>
+            <Then>
+              <Dependency path="/perPersonShare" />
+            </Then>
+          </Case>
+        </Switch>
+      </Derived>
+    </Fact>
+
+    <!-- Derived: Amount saved if it's your birthday -->
+    <Fact path="/amountSaved">
+      <Name>Amount Saved</Name>
+      <Description>How much you saved because it's your birthday</Description>
+      <Derived>
+        <Switch>
+          <Case>
+            <When>
+              <Dependency path="/isYourBirthday" />
+            </When>
+            <Then>
+              <Dependency path="/perPersonShare" />
+            </Then>
+          </Case>
+          <Case>
+            <When>
+              <True/>
+            </When>
+            <Then>
+              <Dollar>0.00</Dollar>
+            </Then>
+          </Case>
+        </Switch>
+      </Derived>
+    </Fact>
+
+    <!-- Derived: Helpful message -->
+    <Fact path="/birthdayMessage">
+      <Name>Birthday Status</Name>
+      <Description>Message about birthday status</Description>
+      <Derived>
+        <Switch>
+          <Case>
+            <When>
+              <Dependency path="/isYourBirthday" />
+            </When>
+            <Then>
+              <String>🎉 Happy Birthday! Your meal is on your friends!</String>
+            </Then>
+          </Case>
+          <Case>
+            <When>
+              <True/>
+            </When>
+            <Then>
+              <String>Split the bill evenly among paying guests</String>
+            </Then>
+          </Case>
+        </Switch>
+      </Derived>
+    </Fact>
+  </Facts>
+</FactDictionaryModule>

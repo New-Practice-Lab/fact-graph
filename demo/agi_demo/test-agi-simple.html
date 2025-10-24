@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AGI Test</title>
+    <script type="module">
+        import * as fg from '../fg.js?v=4'
+
+        window.testAGI = async function() {
+            console.log('Loading XML...')
+            const response = await fetch('./exampleAgiFacts.xml')
+            const xmlText = await response.text()
+
+            console.log('Creating dictionary...')
+            const factDictionary = fg.FactDictionaryFactory.importFromXml(xmlText)
+
+            console.log('Creating graph...')
+            const factGraph = fg.GraphFactory.apply(factDictionary)
+
+            console.log('\nTesting with valid data:')
+            console.log('Setting /totalWages to "50000"')
+            try {
+                factGraph.set('/totalWages', '50000')
+                console.log('✓ Success')
+            } catch (e) {
+                console.error('✗ Error:', e.message)
+                return
+            }
+
+            console.log('Setting /totalInterestIncome to "1500"')
+            try {
+                factGraph.set('/totalInterestIncome', '1500')
+                console.log('✓ Success')
+            } catch (e) {
+                console.error('✗ Error:', e.message)
+                return
+            }
+
+            console.log('Setting /total1099Income to "3000"')
+            try {
+                factGraph.set('/total1099Income', '3000')
+                console.log('✓ Success')
+            } catch (e) {
+                console.error('✗ Error:', e.message)
+                return
+            }
+
+            console.log('Setting /totalAdjustments to "2000"')
+            try {
+                factGraph.set('/totalAdjustments', '2000')
+                console.log('✓ Success')
+            } catch (e) {
+                console.error('✗ Error:', e.message)
+                return
+            }
+
+            console.log('Setting /dateOfBirth to "1990-01-01"')
+            try {
+                factGraph.set('/dateOfBirth', '1990-01-01')
+                console.log('✓ Success')
+            } catch (e) {
+                console.error('✗ Error:', e.message)
+                return
+            }
+
+            console.log('Deriving /yearOfBirth from date of birth')
+            try {
+                const birthYear = new Date('1990-01-01').getFullYear()
+                factGraph.set('/yearOfBirth', birthYear.toString())
+                console.log('✓ Success - set yearOfBirth to', birthYear)
+            } catch (e) {
+                console.error('✗ Error:', e.message)
+                return
+            }
+
+            console.log('Setting /isUsCitizen to "true"')
+            try {
+                factGraph.set('/isUsCitizen', 'true')
+                console.log('✓ Success')
+            } catch (e) {
+                console.error('✗ Error:', e.message)
+                return
+            }
+
+            console.log('\nNote: set() already handles saving, no separate save() call needed')
+
+            console.log('\nGetting AGI...')
+            const agi = factGraph.get('/totalAdjustedGrossIncome')
+            console.log('AGI result:', agi)
+            console.log('AGI value:', agi.v || agi.get || 'unknown')
+
+            const age = factGraph.get('/age')
+            console.log('Age:', age.v || age.get || 'unknown')
+
+            const eligible = factGraph.get('/eligibleForDirectFile')
+            console.log('Eligible:', eligible.v || eligible.get || 'unknown')
+
+            console.log('\n✓ All tests passed!')
+            document.getElementById('result').innerHTML = `
+                <h2>Test Results</h2>
+                <p>AGI: $${agi.v || agi.get || 'unknown'}</p>
+                <p>Age: ${age.v || age.get || 'unknown'}</p>
+                <p>Eligible: ${eligible.v || eligible.get || 'unknown'}</p>
+            `
+        }
+    </script>
+</head>
+<body>
+    <h1>AGI API Test</h1>
+    <button onclick="testAGI()">Run Test</button>
+    <div id="result"></div>
+    <p>Check browser console (F12) for detailed logs</p>
+</body>
+</html>

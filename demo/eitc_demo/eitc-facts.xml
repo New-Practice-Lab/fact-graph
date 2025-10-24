@@ -1,0 +1,869 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FactDictionary>
+    <Meta>
+        <Version>1.0.0</Version>
+        <TaxYear>2024</TaxYear>
+    </Meta>
+
+    <!-- ============================================ -->
+    <!-- ENUM OPTIONS DEFINITIONS -->
+    <!-- ============================================ -->
+
+    <Fact path="/filingStatusOptions">
+        <Name>Filing Status Options</Name>
+        <Description>Available filing status options</Description>
+        <Derived>
+            <EnumOptions>
+                <String>Single</String>
+                <String>MarriedFilingJointly</String>
+                <String>MarriedFilingSeparately</String>
+                <String>HeadOfHousehold</String>
+                <String>QualifyingSurvivingSpouse</String>
+            </EnumOptions>
+        </Derived>
+    </Fact>
+
+    <!-- ============================================ -->
+    <!-- WRITABLE INPUT FACTS -->
+    <!-- ============================================ -->
+
+    <Fact path="/filingStatus">
+        <Name>Filing Status</Name>
+        <Description>The taxpayer's filing status</Description>
+        <Writable>
+            <Enum optionsPath="/filingStatusOptions"/>
+        </Writable>
+    </Fact>
+
+    <Fact path="/isMarried">
+        <Name>Is Married</Name>
+        <Description>Whether the taxpayer is married</Description>
+        <Writable>
+            <Boolean/>
+        </Writable>
+    </Fact>
+
+    <Fact path="/primaryFilerAge">
+        <Name>Primary Filer Age</Name>
+        <Description>Age of the primary filer at the end of the tax year</Description>
+        <Writable>
+            <Int/>
+        </Writable>
+    </Fact>
+
+    <Fact path="/secondaryFilerAge">
+        <Name>Secondary Filer Age</Name>
+        <Description>Age of the secondary filer/spouse at the end of the tax year (if applicable)</Description>
+        <Writable>
+            <Int/>
+        </Writable>
+    </Fact>
+
+    <Fact path="/primaryFilerHasValidSSN">
+        <Name>Primary Filer Has Valid SSN</Name>
+        <Description>Whether the primary filer has a valid SSN for EITC</Description>
+        <Writable>
+            <Boolean/>
+        </Writable>
+    </Fact>
+
+    <Fact path="/secondaryFilerHasValidSSN">
+        <Name>Secondary Filer Has Valid SSN</Name>
+        <Description>Whether the secondary filer has a valid SSN for EITC</Description>
+        <Writable>
+            <Boolean/>
+        </Writable>
+    </Fact>
+
+    <Fact path="/numQualifyingChildren">
+        <Name>Number of Qualifying Children</Name>
+        <Description>The number of qualifying children for EITC (0-3+)</Description>
+        <Writable>
+            <Int/>
+        </Writable>
+    </Fact>
+
+    <Fact path="/earnedIncome">
+        <Name>Earned Income</Name>
+        <Description>Total earned income (wages, salaries, self-employment)</Description>
+        <Writable>
+            <Dollar/>
+        </Writable>
+    </Fact>
+
+    <Fact path="/adjustedGrossIncome">
+        <Name>Adjusted Gross Income (AGI)</Name>
+        <Description>Your Adjusted Gross Income</Description>
+        <Writable>
+            <Dollar/>
+        </Writable>
+    </Fact>
+
+    <Fact path="/investmentIncome">
+        <Name>Investment Income</Name>
+        <Description>Total investment income (interest, dividends, capital gains)</Description>
+        <Writable>
+            <Dollar/>
+        </Writable>
+    </Fact>
+
+    <Fact path="/canBeClaimedAsDependent">
+        <Name>Can Be Claimed as Dependent</Name>
+        <Description>Whether the filer can be claimed as a dependent on someone else's return</Description>
+        <Writable>
+            <Boolean/>
+        </Writable>
+    </Fact>
+
+    <Fact path="/livesSeparateFromSpouse">
+        <Name>Lives Separate from Spouse</Name>
+        <Description>Whether married filer lived apart from spouse for last 6 months of year (special rule for separated spouses)</Description>
+        <Writable>
+            <Boolean/>
+        </Writable>
+    </Fact>
+
+    <!-- ============================================ -->
+    <!-- DERIVED FILING STATUS FACTS -->
+    <!-- ============================================ -->
+
+    <Fact path="/isFilingStatusMFJ">
+        <Name>Filing Status is Married Filing Jointly</Name>
+        <Derived>
+            <Equal>
+                <Left>
+                    <Dependency path="/filingStatus"/>
+                </Left>
+                <Right>
+                    <Enum optionsPath="/filingStatusOptions">MarriedFilingJointly</Enum>
+                </Right>
+            </Equal>
+        </Derived>
+    </Fact>
+
+    <Fact path="/isFilingStatusMFS">
+        <Name>Filing Status is Married Filing Separately</Name>
+        <Derived>
+            <Equal>
+                <Left>
+                    <Dependency path="/filingStatus"/>
+                </Left>
+                <Right>
+                    <Enum optionsPath="/filingStatusOptions">MarriedFilingSeparately</Enum>
+                </Right>
+            </Equal>
+        </Derived>
+    </Fact>
+
+    <Fact path="/isFilingStatusSingle">
+        <Name>Filing Status is Single</Name>
+        <Derived>
+            <Equal>
+                <Left>
+                    <Dependency path="/filingStatus"/>
+                </Left>
+                <Right>
+                    <Enum optionsPath="/filingStatusOptions">Single</Enum>
+                </Right>
+            </Equal>
+        </Derived>
+    </Fact>
+
+    <Fact path="/isFilingStatusHOH">
+        <Name>Filing Status is Head of Household</Name>
+        <Derived>
+            <Equal>
+                <Left>
+                    <Dependency path="/filingStatus"/>
+                </Left>
+                <Right>
+                    <Enum optionsPath="/filingStatusOptions">HeadOfHousehold</Enum>
+                </Right>
+            </Equal>
+        </Derived>
+    </Fact>
+
+    <!-- ============================================ -->
+    <!-- AGE TEST FACTS -->
+    <!-- ============================================ -->
+
+    <Fact path="/primaryFilerAge25OrOlder">
+        <Name>Primary Filer is 25 or Older</Name>
+        <Derived>
+            <GreaterThanOrEqual>
+                <Left>
+                    <Dependency path="/primaryFilerAge"/>
+                </Left>
+                <Right>
+                    <Int>25</Int>
+                </Right>
+            </GreaterThanOrEqual>
+        </Derived>
+    </Fact>
+
+    <Fact path="/primaryFilerAge64OrYounger">
+        <Name>Primary Filer is 64 or Younger</Name>
+        <Derived>
+            <LessThanOrEqual>
+                <Left>
+                    <Dependency path="/primaryFilerAge"/>
+                </Left>
+                <Right>
+                    <Int>64</Int>
+                </Right>
+            </LessThanOrEqual>
+        </Derived>
+    </Fact>
+
+    <Fact path="/secondaryFilerAge25OrOlder">
+        <Name>Secondary Filer is 25 or Older</Name>
+        <Derived>
+            <GreaterThanOrEqual>
+                <Left>
+                    <Dependency path="/secondaryFilerAge"/>
+                </Left>
+                <Right>
+                    <Int>25</Int>
+                </Right>
+            </GreaterThanOrEqual>
+        </Derived>
+    </Fact>
+
+    <Fact path="/secondaryFilerAge64OrYounger">
+        <Name>Secondary Filer is 64 or Younger</Name>
+        <Derived>
+            <LessThanOrEqual>
+                <Left>
+                    <Dependency path="/secondaryFilerAge"/>
+                </Left>
+                <Right>
+                    <Int>64</Int>
+                </Right>
+            </LessThanOrEqual>
+        </Derived>
+    </Fact>
+
+    <Fact path="/filersAgeTestForEitcWithNoQC">
+        <Name>Filers Pass Age Test for EITC with No Qualifying Children</Name>
+        <Description>Age must be 25-64 at end of tax year for EITC without qualifying children</Description>
+        <Derived>
+            <Switch>
+                <Case>
+                    <When>
+                        <Dependency path="/isFilingStatusMFJ"/>
+                    </When>
+                    <Then>
+                        <!-- For MFJ, either spouse must be 25-64 -->
+                        <Any>
+                            <All>
+                                <Dependency path="/primaryFilerAge25OrOlder"/>
+                                <Dependency path="/primaryFilerAge64OrYounger"/>
+                            </All>
+                            <All>
+                                <Dependency path="/secondaryFilerAge25OrOlder"/>
+                                <Dependency path="/secondaryFilerAge64OrYounger"/>
+                            </All>
+                        </Any>
+                    </Then>
+                </Case>
+                <Case>
+                    <When>
+                        <True/>
+                    </When>
+                    <Then>
+                        <!-- For all other filing statuses, primary filer must be 25-64 -->
+                        <All>
+                            <Dependency path="/primaryFilerAge25OrOlder"/>
+                            <Dependency path="/primaryFilerAge64OrYounger"/>
+                        </All>
+                    </Then>
+                </Case>
+            </Switch>
+        </Derived>
+    </Fact>
+
+    <!-- ============================================ -->
+    <!-- SSN VALIDATION FACTS -->
+    <!-- ============================================ -->
+
+    <Fact path="/filersHaveValidSSNsForEitc">
+        <Name>Filers Have Valid SSNs for EITC</Name>
+        <Description>Whether the taxpayer(s) have valid SSNs for EITC purposes</Description>
+        <Derived>
+            <Switch>
+                <Case>
+                    <When>
+                        <Dependency path="/isFilingStatusMFJ"/>
+                    </When>
+                    <Then>
+                        <!-- Both spouses need valid SSNs for MFJ -->
+                        <All>
+                            <Dependency path="/primaryFilerHasValidSSN"/>
+                            <Dependency path="/secondaryFilerHasValidSSN"/>
+                        </All>
+                    </Then>
+                </Case>
+                <Case>
+                    <When>
+                        <True/>
+                    </When>
+                    <Then>
+                        <!-- Only primary filer needs valid SSN for other filing statuses -->
+                        <Dependency path="/primaryFilerHasValidSSN"/>
+                    </Then>
+                </Case>
+            </Switch>
+        </Derived>
+    </Fact>
+
+    <!-- ============================================ -->
+    <!-- INCOME LIMIT CONSTANTS (2024 Tax Year) -->
+    <!-- ============================================ -->
+
+    <Fact path="/eitcInvestmentIncomeLimit">
+        <Name>EITC Investment Income Limit</Name>
+        <Description>Maximum investment income allowed for EITC eligibility (2024)</Description>
+        <TaxYear>2024</TaxYear>
+        <Derived>
+            <Dollar>11600</Dollar>
+        </Derived>
+    </Fact>
+
+    <Fact path="/eitcMfjLimitWith0Children">
+        <Name>EITC Income Limit (MFJ, 0 Children)</Name>
+        <TaxYear>2024</TaxYear>
+        <Derived>
+            <Dollar>25511</Dollar>
+        </Derived>
+    </Fact>
+
+    <Fact path="/eitcSelfLimitWith0Children">
+        <Name>EITC Income Limit (Other, 0 Children)</Name>
+        <TaxYear>2024</TaxYear>
+        <Derived>
+            <Dollar>18591</Dollar>
+        </Derived>
+    </Fact>
+
+    <Fact path="/eitcMfjLimitWith1Child">
+        <Name>EITC Income Limit (MFJ, 1 Child)</Name>
+        <TaxYear>2024</TaxYear>
+        <Derived>
+            <Dollar>56004</Dollar>
+        </Derived>
+    </Fact>
+
+    <Fact path="/eitcSelfLimitWith1Child">
+        <Name>EITC Income Limit (Other, 1 Child)</Name>
+        <TaxYear>2024</TaxYear>
+        <Derived>
+            <Dollar>49084</Dollar>
+        </Derived>
+    </Fact>
+
+    <Fact path="/eitcMfjLimitWith2Children">
+        <Name>EITC Income Limit (MFJ, 2 Children)</Name>
+        <TaxYear>2024</TaxYear>
+        <Derived>
+            <Dollar>62688</Dollar>
+        </Derived>
+    </Fact>
+
+    <Fact path="/eitcSelfLimitWith2Children">
+        <Name>EITC Income Limit (Other, 2 Children)</Name>
+        <TaxYear>2024</TaxYear>
+        <Derived>
+            <Dollar>55768</Dollar>
+        </Derived>
+    </Fact>
+
+    <Fact path="/eitcMfjLimitWith3OrMoreChildren">
+        <Name>EITC Income Limit (MFJ, 3+ Children)</Name>
+        <TaxYear>2024</TaxYear>
+        <Derived>
+            <Dollar>66819</Dollar>
+        </Derived>
+    </Fact>
+
+    <Fact path="/eitcSelfLimitWith3OrMoreChildren">
+        <Name>EITC Income Limit (Other, 3+ Children)</Name>
+        <TaxYear>2024</TaxYear>
+        <Derived>
+            <Dollar>59899</Dollar>
+        </Derived>
+    </Fact>
+
+    <!-- ============================================ -->
+    <!-- INCOME LIMIT DETERMINATION -->
+    <!-- ============================================ -->
+
+    <Fact path="/eitcIncomeLimit">
+        <Name>EITC Income Limit</Name>
+        <Description>The applicable income limit based on filing status and number of qualifying children</Description>
+        <Derived>
+            <Switch>
+                <!-- MFJ Limits -->
+                <Case>
+                    <When>
+                        <Dependency path="/isFilingStatusMFJ"/>
+                    </When>
+                    <Then>
+                        <Switch>
+                            <Case>
+                                <When>
+                                    <GreaterThanOrEqual>
+                                        <Left>
+                                            <Dependency path="/numQualifyingChildren"/>
+                                        </Left>
+                                        <Right>
+                                            <Int>3</Int>
+                                        </Right>
+                                    </GreaterThanOrEqual>
+                                </When>
+                                <Then>
+                                    <Dependency path="/eitcMfjLimitWith3OrMoreChildren"/>
+                                </Then>
+                            </Case>
+                            <Case>
+                                <When>
+                                    <Equal>
+                                        <Left>
+                                            <Dependency path="/numQualifyingChildren"/>
+                                        </Left>
+                                        <Right>
+                                            <Int>2</Int>
+                                        </Right>
+                                    </Equal>
+                                </When>
+                                <Then>
+                                    <Dependency path="/eitcMfjLimitWith2Children"/>
+                                </Then>
+                            </Case>
+                            <Case>
+                                <When>
+                                    <Equal>
+                                        <Left>
+                                            <Dependency path="/numQualifyingChildren"/>
+                                        </Left>
+                                        <Right>
+                                            <Int>1</Int>
+                                        </Right>
+                                    </Equal>
+                                </When>
+                                <Then>
+                                    <Dependency path="/eitcMfjLimitWith1Child"/>
+                                </Then>
+                            </Case>
+                            <Case>
+                                <When>
+                                    <True/>
+                                </When>
+                                <Then>
+                                    <Dependency path="/eitcMfjLimitWith0Children"/>
+                                </Then>
+                            </Case>
+                        </Switch>
+                    </Then>
+                </Case>
+                <!-- Other Filing Status Limits -->
+                <Case>
+                    <When>
+                        <True/>
+                    </When>
+                    <Then>
+                        <Switch>
+                            <Case>
+                                <When>
+                                    <GreaterThanOrEqual>
+                                        <Left>
+                                            <Dependency path="/numQualifyingChildren"/>
+                                        </Left>
+                                        <Right>
+                                            <Int>3</Int>
+                                        </Right>
+                                    </GreaterThanOrEqual>
+                                </When>
+                                <Then>
+                                    <Dependency path="/eitcSelfLimitWith3OrMoreChildren"/>
+                                </Then>
+                            </Case>
+                            <Case>
+                                <When>
+                                    <Equal>
+                                        <Left>
+                                            <Dependency path="/numQualifyingChildren"/>
+                                        </Left>
+                                        <Right>
+                                            <Int>2</Int>
+                                        </Right>
+                                    </Equal>
+                                </When>
+                                <Then>
+                                    <Dependency path="/eitcSelfLimitWith2Children"/>
+                                </Then>
+                            </Case>
+                            <Case>
+                                <When>
+                                    <Equal>
+                                        <Left>
+                                            <Dependency path="/numQualifyingChildren"/>
+                                        </Left>
+                                        <Right>
+                                            <Int>1</Int>
+                                        </Right>
+                                    </Equal>
+                                </When>
+                                <Then>
+                                    <Dependency path="/eitcSelfLimitWith1Child"/>
+                                </Then>
+                            </Case>
+                            <Case>
+                                <When>
+                                    <True/>
+                                </When>
+                                <Then>
+                                    <Dependency path="/eitcSelfLimitWith0Children"/>
+                                </Then>
+                            </Case>
+                        </Switch>
+                    </Then>
+                </Case>
+            </Switch>
+        </Derived>
+    </Fact>
+
+    <!-- ============================================ -->
+    <!-- INCOME TESTS -->
+    <!-- ============================================ -->
+
+    <Fact path="/hasEarnedIncome">
+        <Name>Has Earned Income</Name>
+        <Description>Whether the taxpayer has any earned income</Description>
+        <Derived>
+            <GreaterThan>
+                <Left>
+                    <Dependency path="/earnedIncome"/>
+                </Left>
+                <Right>
+                    <Dollar>0</Dollar>
+                </Right>
+            </GreaterThan>
+        </Derived>
+    </Fact>
+
+    <Fact path="/belowEitcInvestmentIncomeLimit">
+        <Name>Below EITC Investment Income Limit</Name>
+        <Description>Whether investment income is below the limit for EITC</Description>
+        <Derived>
+            <LessThanOrEqual>
+                <Left>
+                    <Dependency path="/investmentIncome"/>
+                </Left>
+                <Right>
+                    <Dependency path="/eitcInvestmentIncomeLimit"/>
+                </Right>
+            </LessThanOrEqual>
+        </Derived>
+    </Fact>
+
+    <Fact path="/belowEitcEarnedIncomeLimit">
+        <Name>Below EITC Earned Income Limit</Name>
+        <Description>Whether earned income is below the EITC limit</Description>
+        <Derived>
+            <LessThan>
+                <Left>
+                    <Dependency path="/earnedIncome"/>
+                </Left>
+                <Right>
+                    <Dependency path="/eitcIncomeLimit"/>
+                </Right>
+            </LessThan>
+        </Derived>
+    </Fact>
+
+    <Fact path="/belowEitcAgiLimit">
+        <Name>Below EITC AGI Limit</Name>
+        <Description>Whether AGI is below the EITC limit</Description>
+        <Derived>
+            <LessThan>
+                <Left>
+                    <Dependency path="/adjustedGrossIncome"/>
+                </Left>
+                <Right>
+                    <Dependency path="/eitcIncomeLimit"/>
+                </Right>
+            </LessThan>
+        </Derived>
+    </Fact>
+
+    <!-- ============================================ -->
+    <!-- QUALIFYING CHILDREN TEST -->
+    <!-- ============================================ -->
+
+    <Fact path="/hasQualifyingChildren">
+        <Name>Has Qualifying Children</Name>
+        <Derived>
+            <GreaterThan>
+                <Left>
+                    <Dependency path="/numQualifyingChildren"/>
+                </Left>
+                <Right>
+                    <Int>0</Int>
+                </Right>
+            </GreaterThan>
+        </Derived>
+    </Fact>
+
+    <Fact path="/hasNoQualifyingChildren">
+        <Name>Has No Qualifying Children</Name>
+        <Derived>
+            <Equal>
+                <Left>
+                    <Dependency path="/numQualifyingChildren"/>
+                </Left>
+                <Right>
+                    <Int>0</Int>
+                </Right>
+            </Equal>
+        </Derived>
+    </Fact>
+
+    <!-- ============================================ -->
+    <!-- SPECIAL RULE FOR SEPARATED SPOUSES -->
+    <!-- ============================================ -->
+
+    <Fact path="/meetsSpecialRuleForSeparatedSpouses">
+        <Name>Meets Special Rule for Separated Spouses</Name>
+        <Description>Married filers living apart for last 6 months may qualify for EITC with qualifying children</Description>
+        <Derived>
+            <All>
+                <Dependency path="/isMarried"/>
+                <Dependency path="/livesSeparateFromSpouse"/>
+                <Dependency path="/hasQualifyingChildren"/>
+            </All>
+        </Derived>
+    </Fact>
+
+    <!-- ============================================ -->
+    <!-- EITC BASE ELIGIBILITY -->
+    <!-- ============================================ -->
+
+    <Fact path="/maybeEligibleForEitcBase">
+        <Name>Maybe Eligible for EITC (Base Requirements)</Name>
+        <Description>Passes basic EITC requirements before considering filing status and dependents</Description>
+        <Derived>
+            <All>
+                <Dependency path="/filersHaveValidSSNsForEitc"/>
+                <Dependency path="/hasEarnedIncome"/>
+                <Dependency path="/belowEitcInvestmentIncomeLimit"/>
+                <Dependency path="/belowEitcEarnedIncomeLimit"/>
+                <Dependency path="/belowEitcAgiLimit"/>
+            </All>
+        </Derived>
+    </Fact>
+
+    <!-- ============================================ -->
+    <!-- EITC ELIGIBILITY WITH QUALIFYING CHILDREN -->
+    <!-- ============================================ -->
+
+    <Fact path="/maybeEligibleForEitcWithQc">
+        <Name>Maybe Eligible for EITC with Qualifying Children</Name>
+        <Description>Taxpayer may be eligible for EITC because they have qualifying children</Description>
+        <Derived>
+            <Dependency path="/hasQualifyingChildren"/>
+        </Derived>
+    </Fact>
+
+    <!-- ============================================ -->
+    <!-- EITC ELIGIBILITY WITHOUT QUALIFYING CHILDREN -->
+    <!-- ============================================ -->
+
+    <Fact path="/maybeEligibleForEitcWithoutQc">
+        <Name>Maybe Eligible for EITC without Qualifying Children</Name>
+        <Description>Taxpayer may be eligible for EITC even without qualifying children</Description>
+        <Derived>
+            <All>
+                <Dependency path="/hasNoQualifyingChildren"/>
+                <!-- Married filers must file jointly (unless special rule applies) -->
+                <Any>
+                    <Dependency path="/isFilingStatusMFJ"/>
+                    <Not>
+                        <Dependency path="/isMarried"/>
+                    </Not>
+                </Any>
+                <!-- Cannot be claimed as dependent -->
+                <Not>
+                    <Dependency path="/canBeClaimedAsDependent"/>
+                </Not>
+                <!-- Must be age 25-64 -->
+                <Dependency path="/filersAgeTestForEitcWithNoQC"/>
+            </All>
+        </Derived>
+    </Fact>
+
+    <!-- ============================================ -->
+    <!-- MARRIED FILING SEPARATELY DISQUALIFICATION -->
+    <!-- ============================================ -->
+
+    <Fact path="/disqualifiedDueToMFS">
+        <Name>Disqualified Due to Married Filing Separately</Name>
+        <Description>Married filing separately disqualifies from EITC (unless special rule applies)</Description>
+        <Derived>
+            <All>
+                <Dependency path="/isMarried"/>
+                <Not>
+                    <Dependency path="/isFilingStatusMFJ"/>
+                </Not>
+                <Not>
+                    <Dependency path="/meetsSpecialRuleForSeparatedSpouses"/>
+                </Not>
+                <Dependency path="/hasNoQualifyingChildren"/>
+            </All>
+        </Derived>
+    </Fact>
+
+    <!-- ============================================ -->
+    <!-- FINAL EITC ELIGIBILITY -->
+    <!-- ============================================ -->
+
+    <Fact path="/maybeEligibleForEitc">
+        <Name>Maybe Eligible for EITC</Name>
+        <Description>Preliminary EITC eligibility (before considering qualifying child tiebreaker rules, improper claims, etc.)</Description>
+        <Derived>
+            <All>
+                <Dependency path="/maybeEligibleForEitcBase"/>
+                <Not>
+                    <Dependency path="/disqualifiedDueToMFS"/>
+                </Not>
+                <Any>
+                    <Dependency path="/maybeEligibleForEitcWithQc"/>
+                    <Dependency path="/maybeEligibleForEitcWithoutQc"/>
+                </Any>
+            </All>
+        </Derived>
+    </Fact>
+
+    <Fact path="/eitcQualified">
+        <Name>Qualified for EITC</Name>
+        <Description>Whether the taxpayer is eligible for the Earned Income Tax Credit</Description>
+        <Export downstreamFacts="true"/>
+        <Derived>
+            <!-- In this simplified demo, we use maybeEligibleForEitc as the final qualification
+                 In the full tax code, additional tests would be required:
+                 - Qualifying child tiebreaker rules
+                 - Form 8862 requirements (improper claims history)
+                 - Special disqualification periods
+            -->
+            <Dependency path="/maybeEligibleForEitc"/>
+        </Derived>
+    </Fact>
+
+    <!-- ============================================ -->
+    <!-- HELPFUL DIAGNOSTIC FACTS -->
+    <!-- ============================================ -->
+
+    <Fact path="/failureReason">
+        <Name>Primary Reason for EITC Ineligibility</Name>
+        <Description>Helps identify why taxpayer doesn't qualify for EITC</Description>
+        <Derived>
+            <Switch>
+                <Case>
+                    <When>
+                        <Dependency path="/eitcQualified"/>
+                    </When>
+                    <Then>
+                        <String>You qualify for EITC!</String>
+                    </Then>
+                </Case>
+                <Case>
+                    <When>
+                        <Not>
+                            <Dependency path="/filersHaveValidSSNsForEitc"/>
+                        </Not>
+                    </When>
+                    <Then>
+                        <String>Missing valid SSN</String>
+                    </Then>
+                </Case>
+                <Case>
+                    <When>
+                        <Not>
+                            <Dependency path="/hasEarnedIncome"/>
+                        </Not>
+                    </When>
+                    <Then>
+                        <String>No earned income</String>
+                    </Then>
+                </Case>
+                <Case>
+                    <When>
+                        <Not>
+                            <Dependency path="/belowEitcInvestmentIncomeLimit"/>
+                        </Not>
+                    </When>
+                    <Then>
+                        <String>Investment income too high (limit: $11,600)</String>
+                    </Then>
+                </Case>
+                <Case>
+                    <When>
+                        <Not>
+                            <Dependency path="/belowEitcAgiLimit"/>
+                        </Not>
+                    </When>
+                    <Then>
+                        <String>AGI exceeds income limit</String>
+                    </Then>
+                </Case>
+                <Case>
+                    <When>
+                        <Not>
+                            <Dependency path="/belowEitcEarnedIncomeLimit"/>
+                        </Not>
+                    </When>
+                    <Then>
+                        <String>Earned income exceeds limit</String>
+                    </Then>
+                </Case>
+                <Case>
+                    <When>
+                        <Dependency path="/disqualifiedDueToMFS"/>
+                    </When>
+                    <Then>
+                        <String>Married filing separately without qualifying children</String>
+                    </Then>
+                </Case>
+                <Case>
+                    <When>
+                        <All>
+                            <Dependency path="/hasNoQualifyingChildren"/>
+                            <Not>
+                                <Dependency path="/filersAgeTestForEitcWithNoQC"/>
+                            </Not>
+                        </All>
+                    </When>
+                    <Then>
+                        <String>Age must be 25-64 without qualifying children</String>
+                    </Then>
+                </Case>
+                <Case>
+                    <When>
+                        <Dependency path="/canBeClaimedAsDependent"/>
+                    </When>
+                    <Then>
+                        <String>Cannot be claimed as dependent on another return</String>
+                    </Then>
+                </Case>
+                <Case>
+                    <When>
+                        <True/>
+                    </When>
+                    <Then>
+                        <String>Does not meet EITC requirements</String>
+                    </Then>
+                </Case>
+            </Switch>
+        </Derived>
+    </Fact>
+
+</FactDictionary>
