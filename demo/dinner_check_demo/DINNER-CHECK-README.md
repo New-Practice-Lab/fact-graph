@@ -1,6 +1,8 @@
 # Dinner Check Splitter Demo
 
-An interactive calculator that splits a dinner bill fairly, with a special birthday rule - people celebrating birthdays don't pay!
+A simplistic calculator that splits a dinner bill. This demo shows how the
+Fact Graph engine can power any set of rules expressed as a fact graph
+dictionary (*i.e.*, rules don't have to be tax-related).
 
 ## Overview
 

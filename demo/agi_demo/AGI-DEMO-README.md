@@ -1,10 +1,12 @@
 # AGI Calculator Demo
 
-An interactive web-based calculator for computing Adjusted Gross Income (AGI) using the Fact Graph engine.
+A calculator for computing Adjusted Gross Income (AGI) using the IRS Fact Graph engine.
 
 ## Overview
 
-This demo showcases how the Fact Graph library can be used to model and calculate tax computations in a web application. It provides a user-friendly form for entering income sources and personal information, then automatically computes:
+This demo demonstrates how to use an AGI-related fact dictionary (copied from the
+[test suite of the upstream IRS repo](https://github.com/IRS-Public/fact-graph/blob/main/shared/src/test/resources/exampleAgiFacts.xml)) to calculate AGI based on form input. The
+form collects income sources and personal information and then automatically computes:
 
 - **Adjusted Gross Income (AGI)** - Total income minus adjustments
 - **Age** - Calculated from year of birth
@@ -70,47 +72,6 @@ The results section will display:
 - Your eligibility for Direct File
 - (Optional) The complete graph data in JSON format
 
-## Example Scenarios
-
-### Scenario 1: Basic W-2 Employee
-```
-Total Wages: $50,000
-Total Interest Income: $1,500
-Total 1099 Income: $3,000
-Total Adjustments: $2,000
-Date of Birth: 1990-01-01
-U.S. Citizen: Yes
-
-Expected AGI: $52,500
-Age: 35
-Eligible for Direct File: Yes
-```
-
-### Scenario 2: High Adjustments
-```
-Total Wages: $10,000
-Total Interest Income: $1,500
-Total 1099 Income: $3,000
-Total Adjustments: $20,000
-Date of Birth: 2009-01-01
-U.S. Citizen: Yes
-
-Expected AGI: -$5,500 (negative AGI)
-Age: 16
-Eligible for Direct File: Yes
-```
-
-### Scenario 3: Under 16
-```
-Total Wages: $5,000
-Date of Birth: 2010-06-15
-U.S. Citizen: Yes
-
-Expected AGI: $5,000
-Age: 15
-Eligible for Direct File: No (under 16)
-```
-
 ## Technical Details
 
 ### Fact Graph Structure
@@ -146,23 +107,6 @@ The demo handles:
 - **Boolean values**: Displayed as "Yes" or "No" with color coding
 - **Negative AGI**: Displayed in red to indicate negative values
 - **Incomplete values**: Shown as "-" when required inputs are missing
-
-## Troubleshooting
-
-**The page loads but nothing happens when I submit:**
-- Check the browser console (F12) for JavaScript errors
-- Ensure you're running from a web server, not opening the file directly (file://)
-- Verify that `fg.js` and the compiled Scala.js output are present
-
-**AGI calculation seems wrong:**
-- Verify all inputs are numeric (no dollar signs or commas)
-- Remember that adjustments are *subtracted* from total income
-- Check the Graph JSON to see all computed values
-
-**Eligibility shows "No" when expected:**
-- Verify you checked "U.S. Citizen"
-- Confirm year of birth makes you 16 or older in 2025
-- Both conditions must be true for eligibility
 
 ## Extending the Demo
 

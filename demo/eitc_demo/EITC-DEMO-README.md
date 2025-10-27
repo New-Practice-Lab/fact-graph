@@ -1,6 +1,6 @@
 # EITC Eligibility Checker Demo
 
-An interactive web application that determines eligibility for the Earned Income Tax Credit (EITC) using the Fact Graph engine.
+A web application that determines eligibility for the Earned Income Tax Credit (EITC) using the Fact Graph engine.
 
 ## What is EITC?
 
@@ -93,58 +93,6 @@ If you have **no qualifying children**, you must be:
 
 If you're married but lived apart from your spouse for the last 6 months of the year **AND** you have qualifying children, you may still qualify for EITC even if not filing jointly.
 
-## Example Scenarios
-
-### Scenario 1: Single Parent with Two Children
-
-- **Filing Status**: Head of Household
-- **Age**: 32
-- **Valid SSN**: Yes
-- **Earned Income**: $35,000
-- **AGI**: $35,000
-- **Investment Income**: $500
-- **Qualifying Children**: 2
-
-**Result**: ✓ **Eligible** - Meets all requirements. Income limit is $55,768.
-
-### Scenario 2: Young Single Worker
-
-- **Filing Status**: Single
-- **Age**: 22
-- **Valid SSN**: Yes
-- **Earned Income**: $15,000
-- **AGI**: $15,000
-- **Investment Income**: $200
-- **Qualifying Children**: 0
-
-**Result**: ✗ **Not Eligible** - Age must be 25-64 without qualifying children.
-
-### Scenario 3: Married Couple with High Investment Income
-
-- **Filing Status**: Married Filing Jointly
-- **Ages**: 35 and 38
-- **Valid SSNs**: Yes (both)
-- **Earned Income**: $40,000
-- **AGI**: $40,000
-- **Investment Income**: $15,000
-- **Qualifying Children**: 1
-
-**Result**: ✗ **Not Eligible** - Investment income exceeds $11,600 limit.
-
-### Scenario 4: Married Filing Separately
-
-- **Filing Status**: Married Filing Separately
-- **Married**: Yes
-- **Age**: 40
-- **Valid SSN**: Yes
-- **Earned Income**: $25,000
-- **AGI**: $25,000
-- **Investment Income**: $1,000
-- **Qualifying Children**: 0
-- **Lives Separate**: No
-
-**Result**: ✗ **Not Eligible** - Cannot file MFS without qualifying children (unless special rule applies).
-
 ## Technical Details
 
 ### Fact Dictionary
@@ -219,7 +167,7 @@ Change line with `/eitcInvestmentIncomeLimit`:
 <Dollar>15000</Dollar>
 ```
 
-Refresh the page and re-test - no code changes needed!
+The changes will take effect once you refresh the page.
 
 ### Example: Lower Age Minimum
 
@@ -232,16 +180,3 @@ Find `/primaryFilerAge25OrOlder` and change:
 <!-- After -->
 <Int>21</Int>
 ```
-
-## Learn More
-
-- **Fact Graph Documentation**: See `/CLAUDE.md` in the project root
-- **IRS EITC Information**: [https://www.irs.gov/credits-deductions/individuals/earned-income-tax-credit](https://www.irs.gov/credits-deductions/individuals/earned-income-tax-credit)
-- **Other Demos**:
-  - AGI Calculator: `demo/agi_demo/`
-  - Dinner Check Splitter: `demo/dinner_check_demo/`
-  - Generic Fact Graph: `demo/generic_demo/`
-
-## License
-
-This demo is part of the Fact Graph project. See the project root for license information.
