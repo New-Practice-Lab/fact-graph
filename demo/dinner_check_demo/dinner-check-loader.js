@@ -125,10 +125,8 @@ function displayResults(results) {
     // Change card style if it's their birthday
     if (results.isBirthday === true) {
       resultCard.classList.add('birthday-card')
-      document.querySelector('.emoji').textContent = '🎉'
     } else {
       resultCard.classList.remove('birthday-card')
-      document.querySelector('.emoji').textContent = '💰'
     }
   } else {
     userShareElement.textContent = results.userShare
@@ -153,7 +151,7 @@ function displayResults(results) {
   // Display birthday status
   const isBirthdayElement = document.getElementById('is-birthday-value')
   if (results.isBirthday === true) {
-    isBirthdayElement.textContent = '🎂 Yes! Happy Birthday!'
+    isBirthdayElement.textContent = 'Yes - Happy Birthday!'
     isBirthdayElement.classList.add('success')
   } else {
     isBirthdayElement.textContent = 'No'
@@ -192,13 +190,16 @@ function formatCurrency(value) {
 
 function showError(message) {
   const errorDiv = document.getElementById('error')
-  errorDiv.textContent = message
+  const errorText = errorDiv.querySelector('.usa-alert__text')
+  errorText.textContent = message
   errorDiv.classList.add('show')
+  errorDiv.classList.remove('hidden')
 }
 
 function hideError() {
   const errorDiv = document.getElementById('error')
   errorDiv.classList.remove('show')
+  errorDiv.classList.add('hidden')
 }
 
 function resetForm() {

@@ -1,0 +1,74 @@
+/* Shared styles for Fact Graph demos using USWDS */
+
+/* Graph display styling */
+#graph,
+pre.graph-display {
+  display: block;
+  background-color: #f0f0f0;
+  padding: 1rem;
+  border-radius: 0.25rem;
+  overflow-x: auto;
+}
+
+/* Error alert states */
+#error.hidden,
+.usa-alert.hidden {
+  display: none;
+}
+
+#error.show {
+  display: block;
+}
+
+/* Results section toggle */
+#results {
+  display: none;
+}
+
+#results.show {
+  display: block;
+}
+
+/* Graph JSON toggle */
+#graph-json {
+  display: none;
+}
+
+#graph-json.show {
+  display: block;
+}
+
+/* Result display boxes */
+#fact-result,
+.result-display {
+  margin-top: 1rem;
+  padding: 1rem;
+  background-color: #e7f6f8;
+  border-left: 4px solid #00bde3;
+}
+
+/* Result items (used in multiple demos) */
+.result-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem;
+  margin-bottom: 0.5rem;
+  background-color: #f0f0f0;
+  border-left: 4px solid #005ea2;
+}
+
+/* Section spacing */
+.usa-section {
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}
+
+/* Table responsiveness */
+.usa-table {
+  width: 100%;
+}
+
+/* Form element spacing */
+.usa-form-group {
+  margin-bottom: 1rem;
+}

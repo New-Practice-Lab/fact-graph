@@ -61,11 +61,12 @@ function displayGraph() {
 
 function setError(msg) {
   const errorDiv = document.querySelector('#error')
+  const errorText = document.querySelector('#error .usa-alert__text')
   if (!msg) {
     errorDiv.classList.add('hidden')
   } else {
     errorDiv.classList.remove('hidden')
-    errorDiv.innerText = msg
+    errorText.innerText = msg
   }
 }
 

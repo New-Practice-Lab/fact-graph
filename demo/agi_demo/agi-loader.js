@@ -211,13 +211,16 @@ function formatCurrency(value) {
 
 function showError(message) {
   const errorDiv = document.getElementById('error')
-  errorDiv.textContent = message
+  const errorText = errorDiv.querySelector('.usa-alert__text')
+  errorText.textContent = message
   errorDiv.classList.add('show')
+  errorDiv.classList.remove('hidden')
 }
 
 function hideError() {
   const errorDiv = document.getElementById('error')
   errorDiv.classList.remove('show')
+  errorDiv.classList.add('hidden')
 }
 
 function resetForm() {
