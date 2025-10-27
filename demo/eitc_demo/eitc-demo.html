@@ -4,303 +4,80 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EITC Eligibility Checker - Fact Graph Demo</title>
+
+    <!-- USWDS CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@uswds/uswds@3.8.1/dist/css/uswds.min.css">
+    <link rel="stylesheet" href="../assets/styles.css">
+
     <script type="module" src="../fg.js?v=1"></script>
     <script type="module" src="./eitc-loader.js?v=1"></script>
 
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 20px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            line-height: 1.6;
-        }
-
-        h1 {
-            color: white;
-            margin-bottom: 10px;
-            font-size: 2.5em;
-            text-align: center;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-        }
-
-        .subtitle {
-            color: rgba(255,255,255,0.95);
-            margin-bottom: 30px;
-            font-size: 1.2em;
-            text-align: center;
-        }
-
-        .container {
-            background: white;
-            border-radius: 12px;
-            padding: 30px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
-            margin-bottom: 20px;
-        }
-
-        h2 {
-            color: #2c3e50;
-            margin-bottom: 20px;
-            font-size: 1.8em;
-            border-bottom: 3px solid #667eea;
-            padding-bottom: 10px;
-        }
-
-        h3 {
-            color: #34495e;
-            margin-bottom: 15px;
-            margin-top: 25px;
-            font-size: 1.3em;
-        }
-
-        .info-box {
-            background-color: #e8f4f8;
-            border-left: 4px solid #3498db;
-            padding: 15px;
-            margin-bottom: 25px;
-            border-radius: 4px;
-        }
-
-        .info-box p {
-            color: #2c3e50;
-            margin-bottom: 5px;
-        }
-
-        .form-section {
-            margin-bottom: 25px;
-            padding: 20px;
-            background-color: #f8f9fa;
-            border-radius: 8px;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: 600;
-            color: #2c3e50;
-        }
-
-        .help-text {
-            font-size: 0.85em;
-            color: #7f8c8d;
-            margin-bottom: 5px;
-        }
-
-        input[type="text"],
-        input[type="number"],
-        select {
-            width: 100%;
-            padding: 10px;
-            border: 2px solid #ddd;
-            border-radius: 6px;
-            font-size: 1em;
-            transition: border-color 0.3s;
-        }
-
-        input[type="text"]:focus,
-        input[type="number"]:focus,
-        select:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-
-        input[type="checkbox"] {
-            width: 20px;
-            height: 20px;
-            cursor: pointer;
-            margin-right: 10px;
-        }
-
-        .checkbox-group {
-            display: flex;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-
-        .checkbox-group label {
-            margin: 0;
-            font-weight: 500;
-        }
-
-        button {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 14px 35px;
-            border: none;
-            border-radius: 8px;
-            font-size: 1.1em;
-            font-weight: 600;
-            cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
-        }
-
-        button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
-        }
-
-        button:active {
-            transform: translateY(0);
-        }
-
-        .button-group {
-            display: flex;
-            gap: 15px;
-            margin-top: 30px;
-            justify-content: center;
-        }
-
-        .reset-button {
-            background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%);
-            box-shadow: 0 4px 15px rgba(149, 165, 166, 0.4);
-        }
-
-        .reset-button:hover {
-            box-shadow: 0 6px 20px rgba(149, 165, 166, 0.6);
-        }
-
-        #error {
-            background-color: #fee;
-            border: 2px solid #e74c3c;
-            color: #c0392b;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            display: none;
-        }
-
-        #error.show {
-            display: block;
-        }
-
-        #results {
-            display: none;
-        }
-
-        #results.show {
-            display: block;
-        }
-
         .result-card {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background-color: #005ea2;
             color: white;
-            padding: 30px;
-            border-radius: 12px;
+            padding: 2rem;
+            border-radius: 0.5rem;
             text-align: center;
-            margin-bottom: 20px;
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+            margin-bottom: 1.5rem;
         }
 
         .result-card.qualified {
-            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            background-color: #00a91c;
         }
 
         .result-card.not-qualified {
-            background: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);
+            background-color: #d83933;
         }
 
         .result-card h2 {
             color: white;
             border: none;
-            margin-bottom: 15px;
-            font-size: 2.2em;
+            margin-bottom: 1rem;
+            font-size: 2em;
         }
 
         .result-card .status {
             font-size: 3em;
-            margin: 20px 0;
+            margin: 1rem 0;
         }
 
         .result-card .reason {
             font-size: 1.2em;
-            opacity: 0.95;
-            margin-top: 15px;
+            margin-top: 1rem;
         }
 
         .details-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-top: 20px;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            margin-bottom: 1.5rem;
         }
 
         .detail-item {
-            background-color: #f8f9fa;
-            padding: 15px;
-            border-radius: 8px;
-            border-left: 4px solid #667eea;
-        }
-
-        .detail-label {
-            font-size: 0.9em;
-            color: #7f8c8d;
-            margin-bottom: 5px;
-        }
-
-        .detail-value {
-            font-size: 1.2em;
-            font-weight: 600;
-            color: #2c3e50;
+            background-color: #f0f0f0;
+            padding: 1rem;
+            border-left: 4px solid #005ea2;
         }
 
         .detail-value.pass {
-            color: #27ae60;
+            color: #00a91c;
+            font-weight: bold;
         }
 
         .detail-value.fail {
-            color: #e74c3c;
+            color: #d83933;
+            font-weight: bold;
         }
 
         @media (max-width: 768px) {
             .details-grid {
                 grid-template-columns: 1fr;
             }
-
-            h1 {
-                font-size: 2em;
-            }
-
-            .button-group {
-                flex-direction: column;
-            }
-        }
-
-        .toggle-button {
-            background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%);
-            padding: 10px 20px;
-            font-size: 0.95em;
-        }
-
-        #graph-json {
-            display: none;
-            margin-top: 20px;
-        }
-
-        #graph-json.show {
-            display: block;
         }
 
         pre {
-            background-color: #2c3e50;
-            color: #ecf0f1;
-            padding: 15px;
-            border-radius: 8px;
-            overflow-x: auto;
-            font-size: 0.85em;
             max-height: 400px;
         }
 
@@ -314,163 +91,163 @@
     </style>
 </head>
 <body>
-    <h1>Demo: EITC Eligibility Checker</h1>
-    <p class="subtitle">Check if you qualify for the Earned Income Tax Credit (2024 Tax Year)</p>
+    <div class="usa-section">
+        <div class="grid-container">
+            <h1 class="usa-heading">Demo: EITC Eligibility Checker</h1>
+            <p class="usa-intro">Check if you qualify for the Earned Income Tax Credit (2024 Tax Year)</p>
 
-    <div id="error"></div>
-
-    <div class="container">
-        <div class="info-box">
-            <p><strong>About the Earned Income Tax Credit (EITC)</strong></p>
-            <p>The EITC is a refundable tax credit for low to moderate income workers. This tool helps you determine if you're eligible based on 2024 tax year rules.</p>
-            <p><b>Note:</b> this simplified demo excludes checks for improper claims history, qualifying child tie breaker rules, etc.</p>
-        </div>
-
-        <form id="eitc-form">
-            <div class="form-section">
-                <h3>Filing Information</h3>
-
-                <div class="form-group">
-                    <label for="filingStatus">Filing Status</label>
-                    <select id="filingStatus" name="filingStatus" required>
-                        <option value="">-- Select Filing Status --</option>
-                        <option value="Single">Single</option>
-                        <option value="MarriedFilingJointly">Married Filing Jointly</option>
-                        <option value="MarriedFilingSeparately">Married Filing Separately</option>
-                        <option value="HeadOfHousehold">Head of Household</option>
-                        <option value="QualifyingSurvivingSpouse">Qualifying Surviving Spouse</option>
-                    </select>
-                </div>
-
-                <div class="form-group checkbox-group">
-                    <input type="checkbox" id="isMarried" name="isMarried">
-                    <label for="isMarried">I am married (regardless of how filing)</label>
+            <div id="error" class="usa-alert usa-alert--error hidden" role="alert">
+                <div class="usa-alert__body">
+                    <p class="usa-alert__text"></p>
                 </div>
             </div>
 
-            <div class="form-section">
-                <h3>Taxpayer Information</h3>
-
-                <div class="form-group">
-                    <label for="primaryFilerAge">Your Age (at end of 2024)</label>
-                    <input type="number" id="primaryFilerAge" name="primaryFilerAge" min="0" max="120" required>
-                </div>
-
-                <div class="form-group checkbox-group">
-                    <input type="checkbox" id="primaryFilerHasValidSSN" name="primaryFilerHasValidSSN" checked>
-                    <label for="primaryFilerHasValidSSN">I have a valid SSN for employment</label>
-                </div>
-
-                <div id="spouseFields" class="conditional-field">
-                    <div class="form-group">
-                        <label for="secondaryFilerAge">Spouse's Age (at end of 2024)</label>
-                        <input type="number" id="secondaryFilerAge" name="secondaryFilerAge" min="0" max="120">
-                    </div>
-
-                    <div class="form-group checkbox-group">
-                        <input type="checkbox" id="secondaryFilerHasValidSSN" name="secondaryFilerHasValidSSN" checked>
-                        <label for="secondaryFilerHasValidSSN">Spouse has a valid SSN for employment</label>
-                    </div>
-
-                    <div class="form-group checkbox-group">
-                        <input type="checkbox" id="livesSeparateFromSpouse" name="livesSeparateFromSpouse">
-                        <label for="livesSeparateFromSpouse">We lived apart for the last 6 months of the year (special rule)</label>
+            <section class="usa-section">
+                <div class="usa-alert usa-alert--info">
+                    <div class="usa-alert__body">
+                        <h4 class="usa-alert__heading">About the Earned Income Tax Credit (EITC)</h4>
+                        <p class="usa-alert__text">The EITC is a refundable tax credit for low to moderate income workers. This tool helps you determine if you're eligible based on 2024 tax year rules.</p>
+                        <p class="usa-alert__text"><strong>Note:</strong> this simplified demo excludes checks for improper claims history, qualifying child tie breaker rules, etc.</p>
                     </div>
                 </div>
 
-                <div class="form-group checkbox-group">
-                    <input type="checkbox" id="canBeClaimedAsDependent" name="canBeClaimedAsDependent">
-                    <label for="canBeClaimedAsDependent">I can be claimed as a dependent on someone else's return</label>
+                <form id="eitc-form" class="usa-form usa-form--large">
+                    <h2 class="usa-heading">Filing Information</h2>
+
+                    <div class="usa-form-group">
+                        <label class="usa-label" for="filingStatus">Filing Status</label>
+                        <select class="usa-select" id="filingStatus" name="filingStatus" required>
+                            <option value="">-- Select Filing Status --</option>
+                            <option value="Single">Single</option>
+                            <option value="MarriedFilingJointly">Married Filing Jointly</option>
+                            <option value="MarriedFilingSeparately">Married Filing Separately</option>
+                            <option value="HeadOfHousehold">Head of Household</option>
+                            <option value="QualifyingSurvivingSpouse">Qualifying Surviving Spouse</option>
+                        </select>
+                    </div>
+
+                    <div class="usa-checkbox">
+                        <input class="usa-checkbox__input" type="checkbox" id="isMarried" name="isMarried">
+                        <label class="usa-checkbox__label" for="isMarried">I am married (regardless of how filing)</label>
+                    </div>
+
+                    <h2 class="usa-heading">Taxpayer Information</h2>
+
+                    <div class="usa-form-group">
+                        <label class="usa-label" for="primaryFilerAge">Your Age (at end of 2024)</label>
+                        <input class="usa-input" type="number" id="primaryFilerAge" name="primaryFilerAge" min="0" max="120" required>
+                    </div>
+
+                    <div class="usa-checkbox">
+                        <input class="usa-checkbox__input" type="checkbox" id="primaryFilerHasValidSSN" name="primaryFilerHasValidSSN" checked>
+                        <label class="usa-checkbox__label" for="primaryFilerHasValidSSN">I have a valid SSN for employment</label>
+                    </div>
+
+                    <div id="spouseFields" class="conditional-field">
+                        <div class="usa-form-group">
+                            <label class="usa-label" for="secondaryFilerAge">Spouse's Age (at end of 2024)</label>
+                            <input class="usa-input" type="number" id="secondaryFilerAge" name="secondaryFilerAge" min="0" max="120">
+                        </div>
+
+                        <div class="usa-checkbox">
+                            <input class="usa-checkbox__input" type="checkbox" id="secondaryFilerHasValidSSN" name="secondaryFilerHasValidSSN" checked>
+                            <label class="usa-checkbox__label" for="secondaryFilerHasValidSSN">Spouse has a valid SSN for employment</label>
+                        </div>
+
+                        <div class="usa-checkbox">
+                            <input class="usa-checkbox__input" type="checkbox" id="livesSeparateFromSpouse" name="livesSeparateFromSpouse">
+                            <label class="usa-checkbox__label" for="livesSeparateFromSpouse">We lived apart for the last 6 months of the year (special rule)</label>
+                        </div>
+                    </div>
+
+                    <div class="usa-checkbox">
+                        <input class="usa-checkbox__input" type="checkbox" id="canBeClaimedAsDependent" name="canBeClaimedAsDependent">
+                        <label class="usa-checkbox__label" for="canBeClaimedAsDependent">I can be claimed as a dependent on someone else's return</label>
+                    </div>
+
+                    <h2 class="usa-heading">Income Information</h2>
+
+                    <div class="usa-form-group">
+                        <label class="usa-label" for="earnedIncome">Earned Income</label>
+                        <span class="usa-hint">Wages, salaries, tips, and self-employment income</span>
+                        <input class="usa-input" type="number" id="earnedIncome" name="earnedIncome" step="0.01" min="0" placeholder="0.00" required>
+                    </div>
+
+                    <div class="usa-form-group">
+                        <label class="usa-label" for="adjustedGrossIncome">Adjusted Gross Income (AGI)</label>
+                        <span class="usa-hint">Your AGI from your tax return</span>
+                        <input class="usa-input" type="number" id="adjustedGrossIncome" name="adjustedGrossIncome" step="0.01" min="0" placeholder="0.00" required>
+                    </div>
+
+                    <div class="usa-form-group">
+                        <label class="usa-label" for="investmentIncome">Investment Income</label>
+                        <span class="usa-hint">Interest, dividends, and capital gains</span>
+                        <input class="usa-input" type="number" id="investmentIncome" name="investmentIncome" step="0.01" min="0" placeholder="0.00" required>
+                    </div>
+
+                    <h2 class="usa-heading">Qualifying Children</h2>
+
+                    <div class="usa-form-group">
+                        <label class="usa-label" for="numQualifyingChildren">Number of Qualifying Children</label>
+                        <span class="usa-hint">Children who meet the EITC qualifying child tests</span>
+                        <select class="usa-select" id="numQualifyingChildren" name="numQualifyingChildren" required>
+                            <option value="0">0 (No qualifying children)</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3 or more</option>
+                        </select>
+                    </div>
+
+                    <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                        <button class="usa-button" type="submit">Check Eligibility</button>
+                        <button class="usa-button usa-button--secondary" type="button" onclick="resetForm()">Reset Form</button>
+                    </div>
+                </form>
+            </section>
+
+            <section id="results" class="usa-section">
+                <div id="result-card" class="result-card">
+                    <h2>EITC Eligibility Result</h2>
+                    <div class="status" id="status-icon"></div>
+                    <div id="status-text"></div>
+                    <div class="reason" id="failure-reason"></div>
                 </div>
-            </div>
 
-            <div class="form-section">
-                <h3>Income Information</h3>
-
-                <div class="form-group">
-                    <label for="earnedIncome">Earned Income</label>
-                    <div class="help-text">Wages, salaries, tips, and self-employment income</div>
-                    <input type="number" id="earnedIncome" name="earnedIncome" step="0.01" min="0" placeholder="0.00" required>
+                <h2 class="usa-heading">Eligibility Details</h2>
+                <div class="details-grid">
+                    <div class="detail-item">
+                        <div class="detail-label">Valid SSN(s)</div>
+                        <div class="detail-value" id="ssn-check">-</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Has Earned Income</div>
+                        <div class="detail-value" id="earned-income-check">-</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Investment Income Limit</div>
+                        <div class="detail-value" id="investment-check">-</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">AGI Limit</div>
+                        <div class="detail-value" id="agi-check">-</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Earned Income Limit</div>
+                        <div class="detail-value" id="earned-limit-check">-</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Applicable Income Limit</div>
+                        <div class="detail-value" id="income-limit-value">-</div>
+                    </div>
                 </div>
 
-                <div class="form-group">
-                    <label for="adjustedGrossIncome">Adjusted Gross Income (AGI)</label>
-                    <div class="help-text">Your AGI from your tax return</div>
-                    <input type="number" id="adjustedGrossIncome" name="adjustedGrossIncome" step="0.01" min="0" placeholder="0.00" required>
+                <button class="usa-button usa-button--outline" type="button" onclick="toggleGraphJson()">Show/Hide Graph JSON</button>
+
+                <div id="graph-json">
+                    <h3 class="usa-heading" style="margin-top: 2rem;">Graph Data (JSON)</h3>
+                    <pre id="graph-json-content"></pre>
                 </div>
-
-                <div class="form-group">
-                    <label for="investmentIncome">Investment Income</label>
-                    <div class="help-text">Interest, dividends, and capital gains</div>
-                    <input type="number" id="investmentIncome" name="investmentIncome" step="0.01" min="0" placeholder="0.00" required>
-                </div>
-            </div>
-
-            <div class="form-section">
-                <h3>Qualifying Children</h3>
-
-                <div class="form-group">
-                    <label for="numQualifyingChildren">Number of Qualifying Children</label>
-                    <div class="help-text">Children who meet the EITC qualifying child tests</div>
-                    <select id="numQualifyingChildren" name="numQualifyingChildren" required>
-                        <option value="0">0 (No qualifying children)</option>
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3 or more</option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="button-group">
-                <button type="submit">Check Eligibility</button>
-                <button type="button" class="reset-button" onclick="resetForm()">Reset Form</button>
-            </div>
-        </form>
-    </div>
-
-    <div id="results" class="container">
-        <div id="result-card" class="result-card">
-            <h2>EITC Eligibility Result</h2>
-            <div class="status" id="status-icon"></div>
-            <div id="status-text"></div>
-            <div class="reason" id="failure-reason"></div>
-        </div>
-
-        <h2>Eligibility Details</h2>
-        <div class="details-grid">
-            <div class="detail-item">
-                <div class="detail-label">Valid SSN(s)</div>
-                <div class="detail-value" id="ssn-check">-</div>
-            </div>
-            <div class="detail-item">
-                <div class="detail-label">Has Earned Income</div>
-                <div class="detail-value" id="earned-income-check">-</div>
-            </div>
-            <div class="detail-item">
-                <div class="detail-label">Investment Income Limit</div>
-                <div class="detail-value" id="investment-check">-</div>
-            </div>
-            <div class="detail-item">
-                <div class="detail-label">AGI Limit</div>
-                <div class="detail-value" id="agi-check">-</div>
-            </div>
-            <div class="detail-item">
-                <div class="detail-label">Earned Income Limit</div>
-                <div class="detail-value" id="earned-limit-check">-</div>
-            </div>
-            <div class="detail-item">
-                <div class="detail-label">Applicable Income Limit</div>
-                <div class="detail-value" id="income-limit-value">-</div>
-            </div>
-        </div>
-
-        <div class="button-group">
-            <button type="button" class="toggle-button" onclick="toggleGraphJson()">Show/Hide Raw Data (JSON)</button>
-        </div>
-
-        <div id="graph-json">
-            <h3 style="margin-top: 20px; margin-bottom: 10px;">Graph Data (JSON)</h3>
-            <pre id="graph-json-content"></pre>
+            </section>
         </div>
     </div>
 
@@ -496,5 +273,8 @@
             filingStatusSelect.addEventListener('change', updateSpouseFields);
         });
     </script>
+
+    <!-- USWDS JS -->
+    <script src="https://cdn.jsdelivr.net/npm/@uswds/uswds@3.8.1/dist/js/uswds.min.js"></script>
 </body>
 </html>
