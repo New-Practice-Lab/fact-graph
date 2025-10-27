@@ -4,7 +4,7 @@ This directory contains web-based demos for the Fact Graph JavaScript library.
 
 ## Available Demos
 
-1. **Get/set Fact Graph demo** (`generic_demo/index.html`) - Included in the IRS original repo,
+1. **Get/set Fact Graph demo** (`get_set_demo/index.html`) - Included in the IRS original repo,
 this is a general-purpose form for loading any fact dictionary and manually setting/getting facts. See [get_set_demo/GET-SET-README.md](./agi_demo/AGI-DEMO-README.md) for details.
 
 2. **AGI Calculator demo** (`agi_demo/agi-demo.html`) - Calculator for computing Adjusted Gross Income. See [agi_demo/AGI-DEMO-README.md](./agi_demo/AGI-DEMO-README.md) for details.
