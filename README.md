@@ -24,6 +24,10 @@ See [here](docs/from-3.0-to-3.1.md) for a brief description of changes between t
 ## Contributing
 See [CONTRIBUTING.md](CONTRIBUTING.md) for details.
 
+## Demos
+See [the demos folder and README](demo/README.md) for a list of simple
+applications intended to demonstrate the Fact Graph's capabilities.
+
 ## Repository Update Frequency 
 
 This repository is updated frequently. Development occurs in a private repository and approved changes to `main` are pushed to this repository in real-time.
