@@ -25,7 +25,7 @@ create a simple web server to view the demos:
    ```
 
 2. Open your browser to:
-   - Generic demo: [http://localhost:8000/demo/generic_demo/index.html](http://localhost:8000/demo/generic_demo/index.html)
+   - Generic get/set demo: [http://localhost:8000/demo/get_set_demo/index.html](http://localhost:8000/demo/get_set_demo/index.html)
    - AGI Calculator: [http://localhost:8000/demo/agi_demo/agi-demo.html](http://localhost:8000/demo/agi_demo/agi-demo.html)
    - EITC Eligibility Checker: [http://localhost:8000/demo/eitc_demo/eitc-demo.html](http://localhost:8000/demo/eitc_demo/eitc-demo.html)
    - Dinner Check Splitter: [http://localhost:8000/demo/dinner_check_demo/dinner-check-demo.html](http://localhost:8000/demo/dinner_check_demo/dinner-check-demo.html)
