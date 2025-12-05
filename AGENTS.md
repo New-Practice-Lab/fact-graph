@@ -577,6 +577,12 @@ case Multiple(vect: Vector[A], c: Boolean)
 - JS build ~400KB without extra dependencies
 - Scala.js produces optimized JavaScript
 
+## Code style
+- XML files should use a two space indent
+- web pages should be styled using the US Web Design System:
+   https://designsystem.digital.gov/
+
+
 ## Testing
 
 The project uses **ScalaTest** with comprehensive specs:
@@ -585,6 +591,7 @@ The project uses **ScalaTest** with comprehensive specs:
 - Limit tests (`MaxSpec.scala`)
 - Entire dictionary tests (`FactDictionarySpec.scala`)
 - Both JVM and JS test suites
+- Node is required to run the JS test suite
 
 ## Extension Points
 
@@ -608,6 +615,18 @@ The project uses **ScalaTest** with comprehensive specs:
 2. Provide to `Graph(dictionary, customPersister)`
 
 ## Common Development Tasks
+
+ONBOARDING.md contains instructions for project setup.
+
+General usage:
+- nvm use 22.17.0 to ensure that Javascript unit tests can run
+- sbt compile - compile the JVM build
+- sbt fastOptJS - compile the JS build quickly
+- sbt fullOptJS - compile the JS build for production
+- sbt clean - delete the build artifacts
+- sbt test - run the tests (both Java and JS)
+- sbt testOnly tinSpec.scala - run just the tinSpec.scala test
+- sbt publishLocal - publish to your local repository to use Fact Graph with other projects
 
 ### Understanding a Computation
 1. Use `graph.explain(path: String)` to trace how value is computed
@@ -641,3 +660,10 @@ The project uses **ScalaTest** with comprehensive specs:
 - **ScalaTest Docs**: https://www.scalatest.org/
 - **Scala XML Docs**: https://www.scala-lang.org/api/2.12.19/scala-xml/
 
+## Demos
+
+- `demo/` is a folder of demonstration fact dictionaries with corresponding
+   form interfaces
+- `demo/assets/` contains assets like .css that are shared between all demos
+- Demo form pages should be styled using the US Web Design System:
+    https://designsystem.digital.gov/
