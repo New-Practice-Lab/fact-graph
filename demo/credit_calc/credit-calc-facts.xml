@@ -1,0 +1,338 @@
+<?xml-model href="./FactDictionaryModule.rng"?>
+<FactDictionaryModule>
+  <Facts>
+
+    <!-- ============================================ -->
+    <!-- DEFINE STATES INCLUDED IN CREDIT CALC        -->
+    <!-- ============================================ -->
+    <Fact path="/filerStateOptions">
+        <Name>State Options</Name>
+        <Description>U.S. State Name</Description>
+        <Derived>
+            <EnumOptions>
+                <String>CO</String>
+                <String>MD</String>
+            </EnumOptions>
+        </Derived>
+    </Fact>
+
+    <Fact path="/filingState">
+      <Name>State Name</Name>
+      <Description>State Name</Description>
+      <Writable>
+        <Enum optionsPath="/filingStateOptions"/>
+      </Writable>
+    </Fact>
+
+    <!-- ============================================ -->
+    <!-- FILING STATUS OPTIONS                        -->
+    <!-- excludes specific status for simplicity:     -->
+    <!--   - Married Filing Separately (not eligible) -->
+    <!--   - Qualifying surviving spouse              -->
+    <!-- ============================================ -->
+    <Fact path="/filingStatusOptions">
+      <Name>Filing Status Options</Name>
+      <Description>Available filing status options</Description>
+      <Derived>
+          <EnumOptions>
+              <String>Single</String>
+              <String>MarriedFilingJointly</String>
+              <String>HeadOfHousehold</String>
+          </EnumOptions>
+      </Derived>
+    </Fact>
+
+    <Fact path="/filingStatus">
+      <Name>Filing Status</Name>
+      <Description>Taxpayer's filing status</Description>
+      <Writable>
+          <Enum optionsPath="/filingStatusOptions"/>
+      </Writable>
+    </Fact>
+
+    <!-- ============================================ -->
+    <!-- DERIVED FILING STATUS FACTS -->
+    <!-- ============================================ -->
+
+    <Fact path="/isFilingStatusMFJ">
+      <Name>Filing Status is Married Filing Jointly</Name>
+      <Derived>
+        <Equal>
+          <Left>
+            <Dependency path="/filingStatus"/>
+          </Left>
+          <Right>
+            <Enum optionsPath="/filingStatusOptions">MarriedFilingJointly</Enum>
+          </Right>
+        </Equal>
+      </Derived>
+    </Fact>
+
+    <Fact path="/isFilingStatusSingle">
+      <Name>Filing Status is Single</Name>
+      <Derived>
+        <Equal>
+          <Left>
+            <Dependency path="/filingStatus"/>
+          </Left>
+          <Right>
+            <Enum optionsPath="/filingStatusOptions">Single</Enum>
+          </Right>
+        </Equal>
+      </Derived>
+    </Fact>
+
+    <Fact path="/isFilingStatusHOH">
+      <Name>Filing Status is Head of Household</Name>
+      <Derived>
+        <Equal>
+          <Left>
+            <Dependency path="/filingStatus"/>
+          </Left>
+          <Right>
+            <Enum optionsPath="/filingStatusOptions">HeadOfHousehold</Enum>
+          </Right>
+          </Equal>
+        </Derived>
+    </Fact>
+
+    <!-- ============================================ -->
+    <!-- FOR THIS ITERATION, DEFAULT THE AGI TO $25K  -->
+    <!-- ============================================ -->
+    <Fact path="/adjustedGrossIncome">
+      <Name>Adjusted Gross Income (AGI)</Name>
+      <Description>Adjusted Gross Income</Description>
+      <Derived>
+          <Dollar>25000</Dollar>
+      </Derived>
+    </Fact>
+
+    <Fact path="/numQualifyingChildren">
+        <Name>Number of Qualifying Children</Name>
+        <Description>The number of qualifying children for EITC (0-3+)</Description>
+        <Writable>
+            <Int/>
+        </Writable>
+    </Fact>
+
+    <!-- ============================================ -->
+    <!-- INCOME LIMIT CONSTANTS (2024 Tax Year) -->
+    <!-- ============================================ -->
+
+    <Fact path="/eitcInvestmentIncomeLimit">
+        <Name>EITC Investment Income Limit</Name>
+        <Description>Maximum investment income allowed for EITC eligibility (2024)</Description>
+        <TaxYear>2024</TaxYear>
+        <Derived>
+            <Dollar>11600</Dollar>
+        </Derived>
+    </Fact>
+
+    <Fact path="/eitcMfjLimitWith0Children">
+        <Name>EITC Income Limit (MFJ, 0 Children)</Name>
+        <TaxYear>2024</TaxYear>
+        <Derived>
+            <Dollar>25511</Dollar>
+        </Derived>
+    </Fact>
+
+    <Fact path="/eitcSelfLimitWith0Children">
+        <Name>EITC Income Limit (Other, 0 Children)</Name>
+        <TaxYear>2024</TaxYear>
+        <Derived>
+            <Dollar>18591</Dollar>
+        </Derived>
+    </Fact>
+
+    <Fact path="/eitcMfjLimitWith1Child">
+        <Name>EITC Income Limit (MFJ, 1 Child)</Name>
+        <TaxYear>2024</TaxYear>
+        <Derived>
+            <Dollar>56004</Dollar>
+        </Derived>
+    </Fact>
+
+    <Fact path="/eitcSelfLimitWith1Child">
+        <Name>EITC Income Limit (Other, 1 Child)</Name>
+        <TaxYear>2024</TaxYear>
+        <Derived>
+            <Dollar>49084</Dollar>
+        </Derived>
+    </Fact>
+
+    <Fact path="/eitcMfjLimitWith2Children">
+        <Name>EITC Income Limit (MFJ, 2 Children)</Name>
+        <TaxYear>2024</TaxYear>
+        <Derived>
+            <Dollar>62688</Dollar>
+        </Derived>
+    </Fact>
+
+    <Fact path="/eitcSelfLimitWith2Children">
+        <Name>EITC Income Limit (Other, 2 Children)</Name>
+        <TaxYear>2024</TaxYear>
+        <Derived>
+            <Dollar>55768</Dollar>
+        </Derived>
+    </Fact>
+
+    <Fact path="/eitcMfjLimitWith3OrMoreChildren">
+        <Name>EITC Income Limit (MFJ, 3+ Children)</Name>
+        <TaxYear>2024</TaxYear>
+        <Derived>
+            <Dollar>66819</Dollar>
+        </Derived>
+    </Fact>
+
+    <Fact path="/eitcSelfLimitWith3OrMoreChildren">
+        <Name>EITC Income Limit (Other, 3+ Children)</Name>
+        <TaxYear>2024</TaxYear>
+        <Derived>
+            <Dollar>59899</Dollar>
+        </Derived>
+    </Fact>
+
+        <!-- ============================================ -->
+    <!-- INCOME LIMIT DETERMINATION -->
+    <!-- ============================================ -->
+
+    <Fact path="/eitcIncomeLimit">
+        <Name>EITC Income Limit</Name>
+        <Description>The applicable income limit based on filing status and number of qualifying children</Description>
+        <Derived>
+            <Switch>
+                <!-- MFJ Limits -->
+                <Case>
+                    <When>
+                        <Dependency path="/isFilingStatusMFJ"/>
+                    </When>
+                    <Then>
+                        <Switch>
+                            <Case>
+                                <When>
+                                    <GreaterThanOrEqual>
+                                        <Left>
+                                            <Dependency path="/numQualifyingChildren"/>
+                                        </Left>
+                                        <Right>
+                                            <Int>3</Int>
+                                        </Right>
+                                    </GreaterThanOrEqual>
+                                </When>
+                                <Then>
+                                    <Dependency path="/eitcMfjLimitWith3OrMoreChildren"/>
+                                </Then>
+                            </Case>
+                            <Case>
+                                <When>
+                                    <Equal>
+                                        <Left>
+                                            <Dependency path="/numQualifyingChildren"/>
+                                        </Left>
+                                        <Right>
+                                            <Int>2</Int>
+                                        </Right>
+                                    </Equal>
+                                </When>
+                                <Then>
+                                    <Dependency path="/eitcMfjLimitWith2Children"/>
+                                </Then>
+                            </Case>
+                            <Case>
+                                <When>
+                                    <Equal>
+                                        <Left>
+                                            <Dependency path="/numQualifyingChildren"/>
+                                        </Left>
+                                        <Right>
+                                            <Int>1</Int>
+                                        </Right>
+                                    </Equal>
+                                </When>
+                                <Then>
+                                    <Dependency path="/eitcMfjLimitWith1Child"/>
+                                </Then>
+                            </Case>
+                            <Case>
+                                <When>
+                                    <True/>
+                                </When>
+                                <Then>
+                                    <Dependency path="/eitcMfjLimitWith0Children"/>
+                                </Then>
+                            </Case>
+                        </Switch>
+                    </Then>
+                </Case>
+                <!-- Other Filing Status Limits -->
+                <Case>
+                    <When>
+                        <True/>
+                    </When>
+                    <Then>
+                        <Switch>
+                            <Case>
+                                <When>
+                                    <GreaterThanOrEqual>
+                                        <Left>
+                                            <Dependency path="/numQualifyingChildren"/>
+                                        </Left>
+                                        <Right>
+                                            <Int>3</Int>
+                                        </Right>
+                                    </GreaterThanOrEqual>
+                                </When>
+                                <Then>
+                                    <Dependency path="/eitcSelfLimitWith3OrMoreChildren"/>
+                                </Then>
+                            </Case>
+                            <Case>
+                                <When>
+                                    <Equal>
+                                        <Left>
+                                            <Dependency path="/numQualifyingChildren"/>
+                                        </Left>
+                                        <Right>
+                                            <Int>2</Int>
+                                        </Right>
+                                    </Equal>
+                                </When>
+                                <Then>
+                                    <Dependency path="/eitcSelfLimitWith2Children"/>
+                                </Then>
+                            </Case>
+                            <Case>
+                                <When>
+                                    <Equal>
+                                        <Left>
+                                            <Dependency path="/numQualifyingChildren"/>
+                                        </Left>
+                                        <Right>
+                                            <Int>1</Int>
+                                        </Right>
+                                    </Equal>
+                                </When>
+                                <Then>
+                                    <Dependency path="/eitcSelfLimitWith1Child"/>
+                                </Then>
+                            </Case>
+                            <Case>
+                                <When>
+                                    <True/>
+                                </When>
+                                <Then>
+                                    <Dependency path="/eitcSelfLimitWith0Children"/>
+                                </Then>
+                            </Case>
+                        </Switch>
+                    </Then>
+                </Case>
+            </Switch>
+        </Derived>
+    </Fact>
+
+
+
+
+  </Facts>
+</FactDictionaryModule>
