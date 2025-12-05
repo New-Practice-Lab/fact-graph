@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tax Credit Eligibility Checker - Fact Graph Demo</title>
+
+    <!-- USWDS CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@uswds/uswds@3.8.1/dist/css/uswds.min.css">
+    <link rel="stylesheet" href="../assets/styles.css">
+
+    <script type="module" src="../fg.js?v=1"></script>
+    <script type="module" src="./credit-calc-loader.js?v=1"></script>
+
+    <style>
+        .result-card {
+            background-color: #005ea2;
+            color: white;
+            padding: 2rem;
+            border-radius: 0.5rem;
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .result-card.qualified {
+            background-color: #00a91c;
+        }
+
+        .result-card.not-qualified {
+            background-color: #d83933;
+        }
+
+        .result-card h2 {
+            color: white;
+            border: none;
+            margin-bottom: 1rem;
+            font-size: 2em;
+        }
+
+        .result-card .status {
+            font-size: 3em;
+            margin: 1rem 0;
+        }
+
+        .result-card .reason {
+            font-size: 1.2em;
+            margin-top: 1rem;
+        }
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .detail-item {
+            background-color: #f0f0f0;
+            padding: 1rem;
+            border-left: 4px solid #005ea2;
+        }
+
+        .detail-value.pass {
+            color: #00a91c;
+            font-weight: bold;
+        }
+
+        .detail-value.fail {
+            color: #d83933;
+            font-weight: bold;
+        }
+
+        @media (max-width: 768px) {
+            .details-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        pre {
+            max-height: 400px;
+        }
+
+        .conditional-field {
+            display: none;
+        }
+
+        .conditional-field.show {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="usa-section">
+        <div class="grid-container">
+            <h1 class="usa-heading">Demo: State & Federal Tax Credit Eligibility Checker</h1>
+            <p class="usa-intro">Check if you qualify for EITC and CTC (2024 Tax Year)</p>
+
+            <div id="error" class="usa-alert usa-alert--error hidden" role="alert">
+                <div class="usa-alert__body">
+                    <p class="usa-alert__text"></p>
+                </div>
+            </div>
+
+            <section class="usa-section">
+                <div class="usa-alert usa-alert--info">
+                    <div class="usa-alert__body">
+                        <h4 class="usa-alert__heading">About Tax Credits</h4>
+                        <p class="usa-alert__text">This tool helps you determine if you're eligible for federal and state tax credits including the Earned Income Tax Credit (EITC) and Child Tax Credit (CTC) based on 2024 tax year rules.</p>
+                        <p class="usa-alert__text"><strong>Note:</strong> This demo currently supports Colorado (CO) and Maryland (MD) state calculations.</p>
+                    </div>
+                </div>
+
+                <form id="credit-calc-form" class="usa-form usa-form--large">
+                    <h2 class="usa-heading">State Selection</h2>
+
+                    <div class="usa-form-group">
+                        <label class="usa-label" for="filingState">State</label>
+                        <span class="usa-hint">Select the state where you're filing</span>
+                        <select class="usa-select" id="filingState" name="filingState" required>
+                            <option value="">-- Select State --</option>
+                            <option value="CO">Colorado (CO)</option>
+                            <option value="MD">Maryland (MD)</option>
+                        </select>
+                    </div>
+
+                    <h2 class="usa-heading">Filing Information</h2>
+
+                    <div class="usa-form-group">
+                        <label class="usa-label" for="filingStatus">Filing Status</label>
+                        <select class="usa-select" id="filingStatus" name="filingStatus" required>
+                            <option value="">-- Select Filing Status --</option>
+                            <option value="Single">Single</option>
+                            <option value="MarriedFilingJointly">Married Filing Jointly</option>
+                            <option value="HeadOfHousehold">Head of Household</option>
+                        </select>
+                    </div>
+
+                    <h2 class="usa-heading">Taxpayer Information</h2>
+
+                    <div class="usa-form-group">
+                        <label class="usa-label" for="primaryFilerTaxId">Your Tax ID Type</label>
+                        <span class="usa-hint">What type of tax identification do you have?</span>
+                        <select class="usa-select" id="primaryFilerTaxId" name="primaryFilerTaxId" required>
+                            <option value="">-- Select Tax ID Type --</option>
+                            <option value="SSN">Social Security Number (SSN)</option>
+                            <option value="ITIN">Individual Taxpayer Identification Number (ITIN)</option>
+                            <option value="Neither">Neither</option>
+                        </select>
+                    </div>
+
+                    <div id="spouseFields" class="conditional-field">
+                        <div class="usa-form-group">
+                            <label class="usa-label" for="secondaryFilerTaxId">Spouse's Tax ID Type</label>
+                            <span class="usa-hint">What type of tax identification does your spouse have?</span>
+                            <select class="usa-select" id="secondaryFilerTaxId" name="secondaryFilerTaxId">
+                                <option value="">-- Select Tax ID Type --</option>
+                                <option value="SSN">Social Security Number (SSN)</option>
+                                <option value="ITIN">Individual Taxpayer Identification Number (ITIN)</option>
+                                <option value="Neither">Neither</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <h2 class="usa-heading">Qualifying Children</h2>
+
+                    <div class="usa-form-group">
+                        <label class="usa-label" for="numQualifyingChildren">Number of Qualifying Children</label>
+                        <span class="usa-hint">Children who meet the qualifying child tests for tax credits</span>
+                        <input class="usa-input" type="number" id="numQualifyingChildren" name="numQualifyingChildren" min="0" max="10" value="0" required>
+                    </div>
+
+                    <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                        <button class="usa-button" type="submit">Check Eligibility</button>
+                        <button class="usa-button usa-button--secondary" type="button" onclick="resetForm()">Reset Form</button>
+                    </div>
+                </form>
+            </section>
+
+            <section id="results" class="usa-section">
+                <div id="result-card" class="result-card">
+                    <h2>Tax Credit Eligibility Result</h2>
+                    <div class="status" id="status-icon"></div>
+                    <div id="status-text"></div>
+                    <div class="reason" id="failure-reason"></div>
+                </div>
+
+                <h2 class="usa-heading">Eligibility Details</h2>
+                <div class="details-grid">
+                    <div class="detail-item">
+                        <div class="detail-label">Federal EITC - Valid Tax IDs</div>
+                        <div class="detail-value" id="fed-eitc-id-check">-</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Federal CTC - Valid Tax IDs</div>
+                        <div class="detail-value" id="fed-ctc-id-check">-</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">EITC Income Limit</div>
+                        <div class="detail-value" id="eitc-income-limit">-</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Below EITC AGI Limit</div>
+                        <div class="detail-value" id="eitc-agi-check">-</div>
+                    </div>
+                </div>
+
+                <button class="usa-button usa-button--outline" type="button" onclick="toggleGraphJson()">Show/Hide Graph JSON</button>
+
+                <div id="graph-json">
+                    <h3 class="usa-heading" style="margin-top: 2rem;">Graph Data (JSON)</h3>
+                    <pre id="graph-json-content"></pre>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <script>
+        // Show/hide spouse fields based on filing status
+        document.addEventListener('DOMContentLoaded', () => {
+            const filingStatusSelect = document.getElementById('filingStatus');
+            const spouseFields = document.getElementById('spouseFields');
+
+            function updateSpouseFields() {
+                const filingStatus = filingStatusSelect.value;
+
+                if (filingStatus === 'MarriedFilingJointly') {
+                    spouseFields.classList.add('show');
+                } else {
+                    spouseFields.classList.remove('show');
+                }
+            }
+
+            filingStatusSelect.addEventListener('change', updateSpouseFields);
+        });
+    </script>
+
+    <!-- USWDS JS -->
+    <script src="https://cdn.jsdelivr.net/npm/@uswds/uswds@3.8.1/dist/js/uswds.min.js"></script>
+</body>
+</html>

@@ -29,3 +29,4 @@ create a simple web server to view the demos:
    - AGI Calculator: [http://localhost:8000/demo/agi_demo/agi-demo.html](http://localhost:8000/demo/agi_demo/agi-demo.html)
    - EITC Eligibility Checker: [http://localhost:8000/demo/eitc_demo/eitc-demo.html](http://localhost:8000/demo/eitc_demo/eitc-demo.html)
    - Dinner Check Splitter: [http://localhost:8000/demo/dinner_check_demo/dinner-check-demo.html](http://localhost:8000/demo/dinner_check_demo/dinner-check-demo.html)
+   - Tax Credit Calculator (WIP): [http://localhost:8000/demo/credit_calc/credit-calc-demo.html](http://localhost:8000/demo/credit_calc/credit-calc-demo.html)
