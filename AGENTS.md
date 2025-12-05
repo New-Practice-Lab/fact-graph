@@ -640,3 +640,4 @@ The project uses **ScalaTest** with comprehensive specs:
 - **Onboarding Guide**: `ONBOARDING.md`
 - **ScalaTest Docs**: https://www.scalatest.org/
 - **Scala XML Docs**: https://www.scala-lang.org/api/2.12.19/scala-xml/
+
