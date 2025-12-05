@@ -1,5 +1,9 @@
-<?xml-model href="./FactDictionaryModule.rng"?>
-<FactDictionaryModule>
+<?xml version="1.0" encoding="UTF-8"?>
+<FactDictionary>
+  <Meta>
+    <Version>1.0.0</Version>
+    <TaxYear>2024</TaxYear>
+  </Meta>
   <Facts>
 
   <!-- ============================================ -->
@@ -53,7 +57,6 @@
   <!-- ============================================ -->
   <!-- DERIVED FILING STATUS FACTS -->
   <!-- ============================================ -->
-
   <Fact path="/isFilingStatusMFJ">
     <Name>Filing Status is Married Filing Jointly</Name>
     <Derived>
@@ -97,6 +100,165 @@
   </Fact>
 
   <!-- ============================================ -->
+  <!-- TAX ID STATUS OPTION                         -->
+  <!-- ============================================ -->
+  <Fact path="/taxIdOptions">
+    <Name>Tax Id Options</Name>
+    <Description>Tax Id Options</Description>
+    <Derived>
+      <EnumOptions>
+        <String>SSN</String>
+        <String>ITIN</String>
+        <String>Neither</String>
+      </EnumOptions>
+    </Derived>
+  </Fact>
+
+  <Fact path="/primaryFilerTaxId">
+    <Name>Primary Filer Tax Id</Name>
+    <Description>Do you have an SSN, an ITIN, or neither?</Description>
+    <Writable>
+      <Enum optionsPath="/taxIdOptions"/>
+    </Writable>
+  </Fact>
+
+  <Fact path="/secondaryFilerTaxId">
+    <Name>Secondary Filer Tax Id</Name>
+    <Description>Does your spouse have an SSN, an ITIN, or neither?</Description>
+    <Writable>
+      <Enum optionsPath="/taxIdOptions"/>
+    </Writable>
+  </Fact>
+
+  <Fact path="/primaryFilerHasValidSSN">
+    <Name>Primary Filer Has SSN</Name>
+    <Description>The primary filer has a valid SSN</Description>
+    <Derived>
+      <Equal>
+        <Left>
+          <Dependency path="/primaryFilerTaxId"/>
+        </Left>
+        <Right>
+          <Enum optionsPath="/taxIdOptions">SSN</Enum>
+        </Right>
+      </Equal>
+    </Derived>
+  </Fact>
+
+  <Fact path="/secondaryFilerHasValidSSN">
+    <Name>Secondary Filer Has SSN</Name>
+    <Description>The secondary filer has a valid SSN</Description>
+    <Derived>
+      <Equal>
+        <Left>
+          <Dependency path="/secondaryFilerTaxId"/>
+        </Left>
+        <Right>
+          <Enum optionsPath="/taxIdOptions">SSN</Enum>
+        </Right>
+      </Equal>
+    </Derived>
+  </Fact>
+
+    <Fact path="/primaryFilerHasValidITIN">
+    <Name>Primary Filer Has ITIN</Name>
+    <Description>The primary filer has a valid ITIN</Description>
+    <Derived>
+      <Equal>
+        <Left>
+          <Dependency path="/primaryFilerTaxId"/>
+        </Left>
+        <Right>
+          <Enum optionsPath="/taxIdOptions">ITIN</Enum>
+        </Right>
+      </Equal>
+    </Derived>
+  </Fact>
+
+  <Fact path="/secondaryFilerHasValidITIN">
+    <Name>Secondary Filer Has ITIN</Name>
+    <Description>The secondary filer has a valid ITIN</Description>
+    <Derived>
+      <Equal>
+        <Left>
+          <Dependency path="/secondaryFilerTaxId"/>
+        </Left>
+        <Right>
+          <Enum optionsPath="/taxIdOptions">ITIN</Enum>
+        </Right>
+      </Equal>
+    </Derived>
+  </Fact>
+
+  <!-- ================================================ -->
+  <!-- CALCULATE DERIVED FACT FOR SSN FED EITC ELIGIBILTY -->
+  <!-- ================================================ -->
+  <Fact path="/filersHaveValidIdsForFederalEitc">
+    <Name>Filers Have Valid SSNs for Federal EITC</Name>
+    <Description>Filer(s) have SSN to qualify for federal EITC</Description>
+    <Derived>
+      <Switch>
+        <Case>
+          <When>
+            <Dependency path="/isFilingStatusMFJ"/>
+          </When>
+          <Then>
+            <!-- When MFJ, both filers need SSN for federal EITC -->
+            <All>
+              <Dependency path="/primaryFilerHasValidSSN"/>
+              <Dependency path="/secondaryFilerHasValidSSN"/>
+            </All>
+          </Then>
+        </Case>
+        <Case>
+          <When>
+            <True/>
+          </When>
+          <Then>
+            <!-- Only primary filer needs valid SSN for other filing statuses -->
+            <Dependency path="/primaryFilerHasValidSSN"/>
+          </Then>
+        </Case>
+      </Switch>
+    </Derived>
+  </Fact>
+
+  <!-- ============================================= -->
+  <!-- CALCULATE DERIVED FACT FOR FED CTC ELIGIBILTY -->
+  <!-- This iteration assumes that all qualifying    -->
+  <!-- children have valid SSNs.                     -->
+  <!-- ============================================= -->
+  <Fact path="/filersHaveValidIdsForFederalCtc">
+    <Name>Filers Have Valid Tax Ids for Federal CTC</Name>
+    <Description>Filer(s) have Tax Ids required to qualify for federal CTC</Description>
+    <Derived>
+      <Switch>
+        <Case>
+          <When>
+            <Dependency path="/isFilingStatusMFJ"/>
+          </When>
+          <Then>
+            <!-- When MFJ, at least one filer needs SSN for CTC -->
+            <Any>
+              <Dependency path="/primaryFilerHasValidSSN"/>
+              <Dependency path="/secondaryFilerHasValidSSN"/>
+            </Any>
+          </Then>
+        </Case>
+        <Case>
+          <When>
+            <True/>
+          </When>
+          <Then>
+            <!-- Only primary filer needs valid SSN for other filing statuses -->
+            <Dependency path="/primaryFilerHasValidSSN"/>
+          </Then>
+        </Case>
+      </Switch>
+    </Derived>
+  </Fact>
+
+  <!-- ============================================ -->
   <!-- FOR THIS ITERATION, DEFAULT THE AGI TO $25K  -->
   <!-- ============================================ -->
   <Fact path="/adjustedGrossIncome">
@@ -118,7 +280,6 @@
   <!-- ============================================ -->
   <!-- INCOME LIMIT CONSTANTS (2024 Tax Year) -->
   <!-- ============================================ -->
-
   <Fact path="/eitcInvestmentIncomeLimit">
     <Name>EITC Investment Income Limit</Name>
     <Description>Maximum investment income allowed for EITC eligibility (2024)</Description>
@@ -195,7 +356,6 @@
   <!-- ============================================ -->
   <!-- INCOME LIMIT DETERMINATION                   -->
   <!-- ============================================ -->
-
   <Fact path="/eitcIncomeLimit">
     <Name>EITC Income Limit</Name>
     <Description>The applicable income limit based on filing status and number of qualifying children</Description>
@@ -331,8 +491,5 @@
     </Derived>
   </Fact>
 
-
-
-
   </Facts>
-</FactDictionaryModule>
+</FactDictionary>
