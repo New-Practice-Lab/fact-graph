@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<FactDictionary>
+<FactDictionaryModule>
   <Facts>
 
   <!-- ==================================================== -->
@@ -25,13 +25,13 @@
       <Switch>
         <Case>
           <When>
-            <Dependency path="/isFilingStatusMFJ"/>
+            <Dependency module="creditCalc" path="/isFilingStatusMFJ"/>
           </When>
           <Then>
             <!-- When MFJ, at least one filer needs SSN for CTC -->
             <Any>
-              <Dependency path="/primaryFilerHasValidSSN"/>
-              <Dependency path="/secondaryFilerHasValidSSN"/>
+              <Dependency module="creditCalc" path="/primaryFilerHasValidSSN"/>
+              <Dependency module="creditCalc" path="/secondaryFilerHasValidSSN"/>
             </Any>
           </Then>
         </Case>
@@ -41,7 +41,7 @@
           </When>
           <Then>
             <!-- Only primary filer needs valid SSN for other filing statuses -->
-            <Dependency path="/primaryFilerHasValidSSN"/>
+            <Dependency module="creditCalc" path="/primaryFilerHasValidSSN"/>
           </Then>
         </Case>
       </Switch>
@@ -66,7 +66,7 @@
             <!-- Eligible - multiply max refundable amount per child by number of children -->
             <Multiply>
               <Dependency path="/federalCtcMaxRefundAmountPerChild"/>
-              <Dependency path="/numQualifyingChildren"/>
+              <Dependency module="creditCalc" path="/numQualifyingChildren"/>
             </Multiply>
           </Then>
         </Case>
@@ -84,4 +84,4 @@
   </Fact>
 
   </Facts>
-</FactDictionary>
+</FactDictionaryModule>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<FactDictionary>
+<FactDictionaryModule>
   <Facts>
 
   <!-- ================================================== -->
@@ -12,13 +12,13 @@
       <Switch>
         <Case>
           <When>
-            <Dependency path="/isFilingStatusMFJ"/>
+            <Dependency module="creditCalc" path="/isFilingStatusMFJ"/>
           </When>
           <Then>
             <!-- When MFJ, both filers need SSN for federal EITC -->
             <All>
-              <Dependency path="/primaryFilerHasValidSSN"/>
-              <Dependency path="/secondaryFilerHasValidSSN"/>
+              <Dependency module="creditCalc" path="/primaryFilerHasValidSSN"/>
+              <Dependency module="creditCalc" path="/secondaryFilerHasValidSSN"/>
             </All>
           </Then>
         </Case>
@@ -28,7 +28,7 @@
           </When>
           <Then>
             <!-- Only primary filer needs valid SSN for other filing statuses -->
-            <Dependency path="/primaryFilerHasValidSSN"/>
+            <Dependency module="creditCalc" path="/primaryFilerHasValidSSN"/>
           </Then>
         </Case>
       </Switch>
@@ -157,7 +157,7 @@
         <!-- MFJ Limits -->
         <Case>
           <When>
-            <Dependency path="/isFilingStatusMFJ"/>
+            <Dependency module="creditCalc" path="/isFilingStatusMFJ"/>
           </When>
           <Then>
             <Switch>
@@ -165,7 +165,7 @@
                 <When>
                   <GreaterThanOrEqual>
                     <Left>
-                      <Dependency path="/numQualifyingChildren"/>
+                      <Dependency module="creditCalc" path="/numQualifyingChildren"/>
                     </Left>
                     <Right>
                       <Int>3</Int>
@@ -180,7 +180,7 @@
                 <When>
                   <Equal>
                     <Left>
-                      <Dependency path="/numQualifyingChildren"/>
+                      <Dependency module="creditCalc" path="/numQualifyingChildren"/>
                     </Left>
                     <Right>
                       <Int>2</Int>
@@ -195,7 +195,7 @@
                 <When>
                   <Equal>
                     <Left>
-                      <Dependency path="/numQualifyingChildren"/>
+                      <Dependency module="creditCalc" path="/numQualifyingChildren"/>
                     </Left>
                     <Right>
                       <Int>1</Int>
@@ -228,7 +228,7 @@
                 <When>
                   <GreaterThanOrEqual>
                     <Left>
-                      <Dependency path="/numQualifyingChildren"/>
+                      <Dependency module="creditCalc" path="/numQualifyingChildren"/>
                     </Left>
                     <Right>
                       <Int>3</Int>
@@ -243,7 +243,7 @@
                 <When>
                   <Equal>
                     <Left>
-                      <Dependency path="/numQualifyingChildren"/>
+                      <Dependency module="creditCalc" path="/numQualifyingChildren"/>
                     </Left>
                     <Right>
                       <Int>2</Int>
@@ -258,7 +258,7 @@
                 <When>
                   <Equal>
                     <Left>
-                      <Dependency path="/numQualifyingChildren"/>
+                      <Dependency module="creditCalc" path="/numQualifyingChildren"/>
                     </Left>
                     <Right>
                       <Int>1</Int>
@@ -305,7 +305,7 @@
                 <When>
                   <GreaterThanOrEqual>
                     <Left>
-                      <Dependency path="/numQualifyingChildren"/>
+                      <Dependency module="creditCalc" path="/numQualifyingChildren"/>
                     </Left>
                     <Right>
                       <Int>3</Int>
@@ -320,7 +320,7 @@
                 <When>
                   <Equal>
                     <Left>
-                      <Dependency path="/numQualifyingChildren"/>
+                      <Dependency module="creditCalc" path="/numQualifyingChildren"/>
                     </Left>
                     <Right>
                       <Int>2</Int>
@@ -335,7 +335,7 @@
                 <When>
                   <Equal>
                     <Left>
-                      <Dependency path="/numQualifyingChildren"/>
+                      <Dependency module="creditCalc" path="/numQualifyingChildren"/>
                     </Left>
                     <Right>
                       <Int>1</Int>
@@ -371,4 +371,4 @@
   </Fact>
 
   </Facts>
-</FactDictionary>
+</FactDictionaryModule>

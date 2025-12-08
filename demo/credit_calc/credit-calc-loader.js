@@ -3,8 +3,9 @@ import * as fg from '../fg.js'
 let factGraph
 
 /**
- * Combines multiple fact dictionary XML files into a single XML string.
+ * Combines multiple FactDictionaryModule XML files into a single FactDictionary XML string.
  * Takes the Meta from the first file and merges all Facts sections.
+ * Converts FactDictionaryModule root elements to FactDictionary for compatibility.
  */
 function combineFactDictionaries(...xmlStrings) {
   const parser = new DOMParser()
@@ -22,6 +23,18 @@ function combineFactDictionaries(...xmlStrings) {
     facts.forEach(fact => {
       baseFacts.appendChild(fact.cloneNode(true))
     })
+  }
+
+  // Change root element from FactDictionaryModule to FactDictionary
+  const root = baseDoc.documentElement
+  if (root.tagName === 'FactDictionaryModule') {
+    const newRoot = baseDoc.createElement('FactDictionary')
+    // Copy all children from old root to new root
+    while (root.firstChild) {
+      newRoot.appendChild(root.firstChild)
+    }
+    // Replace the root element
+    baseDoc.replaceChild(newRoot, root)
   }
 
   // Serialize back to XML string
