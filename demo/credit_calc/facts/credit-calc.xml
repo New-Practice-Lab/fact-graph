@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FactDictionary>
+  <Meta>
+    <Version>1.0.0</Version>
+    <TaxYear>2025</TaxYear>
+  </Meta>
+  <Facts>
+
+  <!-- ============================================ -->
+  <!-- DEFINE STATES INCLUDED IN CREDIT CALC        -->
+  <!-- ============================================ -->
+  <Fact path="/filerStateOptions">
+    <Name>State Options</Name>
+    <Description>U.S. State Name</Description>
+    <Derived>
+      <EnumOptions>
+        <String>CO</String>
+        <String>MD</String>
+      </EnumOptions>
+    </Derived>
+  </Fact>
+
+  <Fact path="/filingState">
+    <Name>State Name</Name>
+    <Description>State Name</Description>
+    <Writable>
+    <Enum optionsPath="/filingStateOptions"/>
+    </Writable>
+  </Fact>
+
+  <!-- ============================================ -->
+  <!-- FILING STATUS OPTIONS                        -->
+  <!-- excludes specific status for simplicity:     -->
+  <!--   - Married Filing Separately (not eligible) -->
+  <!--   - Qualifying surviving spouse              -->
+  <!-- ============================================ -->
+  <Fact path="/filingStatusOptions">
+    <Name>Filing Status Options</Name>
+    <Description>Available filing status options</Description>
+    <Derived>
+      <EnumOptions>
+        <String>Single</String>
+        <String>MarriedFilingJointly</String>
+        <String>HeadOfHousehold</String>
+      </EnumOptions>
+    </Derived>
+  </Fact>
+
+  <Fact path="/filingStatus">
+    <Name>Filing Status</Name>
+    <Description>Taxpayer's filing status</Description>
+    <Writable>
+      <Enum optionsPath="/filingStatusOptions"/>
+    </Writable>
+  </Fact>
+
+  <!-- ============================================ -->
+  <!-- DERIVED FILING STATUS FACTS -->
+  <!-- ============================================ -->
+  <Fact path="/isFilingStatusMFJ">
+    <Name>Filing Status is Married Filing Jointly</Name>
+    <Derived>
+    <Equal>
+      <Left>
+      <Dependency path="/filingStatus"/>
+      </Left>
+      <Right>
+      <Enum optionsPath="/filingStatusOptions">MarriedFilingJointly</Enum>
+      </Right>
+    </Equal>
+    </Derived>
+  </Fact>
+
+  <Fact path="/isFilingStatusSingle">
+    <Name>Filing Status is Single</Name>
+    <Derived>
+    <Equal>
+      <Left>
+      <Dependency path="/filingStatus"/>
+      </Left>
+      <Right>
+      <Enum optionsPath="/filingStatusOptions">Single</Enum>
+      </Right>
+    </Equal>
+    </Derived>
+  </Fact>
+
+  <Fact path="/isFilingStatusHOH">
+    <Name>Filing Status is Head of Household</Name>
+    <Derived>
+    <Equal>
+      <Left>
+      <Dependency path="/filingStatus"/>
+      </Left>
+      <Right>
+      <Enum optionsPath="/filingStatusOptions">HeadOfHousehold</Enum>
+      </Right>
+      </Equal>
+    </Derived>
+  </Fact>
+
+  <!-- ============================================ -->
+  <!-- TAX ID STATUS OPTION                         -->
+  <!-- ============================================ -->
+  <Fact path="/taxIdOptions">
+    <Name>Tax Id Options</Name>
+    <Description>Tax Id Options</Description>
+    <Derived>
+      <EnumOptions>
+        <String>SSN</String>
+        <String>ITIN</String>
+        <String>Neither</String>
+      </EnumOptions>
+    </Derived>
+  </Fact>
+
+  <Fact path="/primaryFilerTaxId">
+    <Name>Primary Filer Tax Id</Name>
+    <Description>Do you have an SSN, an ITIN, or neither?</Description>
+    <Writable>
+      <Enum optionsPath="/taxIdOptions"/>
+    </Writable>
+  </Fact>
+
+  <Fact path="/secondaryFilerTaxId">
+    <Name>Secondary Filer Tax Id</Name>
+    <Description>Does your spouse have an SSN, an ITIN, or neither?</Description>
+    <Writable>
+      <Enum optionsPath="/taxIdOptions"/>
+    </Writable>
+  </Fact>
+
+  <Fact path="/primaryFilerHasValidSSN">
+    <Name>Primary Filer Has SSN</Name>
+    <Description>The primary filer has a valid SSN</Description>
+    <Derived>
+      <Equal>
+        <Left>
+          <Dependency path="/primaryFilerTaxId"/>
+        </Left>
+        <Right>
+          <Enum optionsPath="/taxIdOptions">SSN</Enum>
+        </Right>
+      </Equal>
+    </Derived>
+  </Fact>
+
+  <Fact path="/secondaryFilerHasValidSSN">
+    <Name>Secondary Filer Has SSN</Name>
+    <Description>The secondary filer has a valid SSN</Description>
+    <Derived>
+      <Equal>
+        <Left>
+          <Dependency path="/secondaryFilerTaxId"/>
+        </Left>
+        <Right>
+          <Enum optionsPath="/taxIdOptions">SSN</Enum>
+        </Right>
+      </Equal>
+    </Derived>
+  </Fact>
+
+    <Fact path="/primaryFilerHasValidITIN">
+    <Name>Primary Filer Has ITIN</Name>
+    <Description>The primary filer has a valid ITIN</Description>
+    <Derived>
+      <Equal>
+        <Left>
+          <Dependency path="/primaryFilerTaxId"/>
+        </Left>
+        <Right>
+          <Enum optionsPath="/taxIdOptions">ITIN</Enum>
+        </Right>
+      </Equal>
+    </Derived>
+  </Fact>
+
+  <Fact path="/secondaryFilerHasValidITIN">
+    <Name>Secondary Filer Has ITIN</Name>
+    <Description>The secondary filer has a valid ITIN</Description>
+    <Derived>
+      <Equal>
+        <Left>
+          <Dependency path="/secondaryFilerTaxId"/>
+        </Left>
+        <Right>
+          <Enum optionsPath="/taxIdOptions">ITIN</Enum>
+        </Right>
+      </Equal>
+    </Derived>
+  </Fact>
+
+  <!-- ============================================ -->
+  <!-- FOR THIS ITERATION, DEFAULT THE AGI TO $25K  -->
+  <!-- ============================================ -->
+  <Fact path="/adjustedGrossIncome">
+    <Name>Adjusted Gross Income (AGI)</Name>
+    <Description>Adjusted Gross Income</Description>
+    <Derived>
+      <Dollar>25000</Dollar>
+    </Derived>
+  </Fact>
+
+  <Fact path="/numQualifyingChildren">
+    <Name>Number of Qualifying Children</Name>
+    <Description>The number of qualifying children for EITC (0-3+)</Description>
+    <Writable>
+      <Int/>
+    </Writable>
+  </Fact>
+
+  </Facts>
+</FactDictionary>

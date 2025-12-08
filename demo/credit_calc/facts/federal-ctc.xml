@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FactDictionary>
+  <Facts>
+
+  <!-- ============================================= -->
+  <!-- CALCULATE DERIVED FACT FOR FED CTC ELIGIBILTY -->
+  <!-- This iteration assumes that all qualifying    -->
+  <!-- children have valid SSNs.                     -->
+  <!-- ============================================= -->
+  <Fact path="/filersHaveValidIdsForFederalCtc">
+    <Name>Filers Have Valid Tax Ids for Federal CTC</Name>
+    <Description>Filer(s) have Tax Ids required to qualify for federal CTC</Description>
+    <Derived>
+      <Switch>
+        <Case>
+          <When>
+            <Dependency path="/isFilingStatusMFJ"/>
+          </When>
+          <Then>
+            <!-- When MFJ, at least one filer needs SSN for CTC -->
+            <Any>
+              <Dependency path="/primaryFilerHasValidSSN"/>
+              <Dependency path="/secondaryFilerHasValidSSN"/>
+            </Any>
+          </Then>
+        </Case>
+        <Case>
+          <When>
+            <True/>
+          </When>
+          <Then>
+            <!-- Only primary filer needs valid SSN for other filing statuses -->
+            <Dependency path="/primaryFilerHasValidSSN"/>
+          </Then>
+        </Case>
+      </Switch>
+    </Derived>
+  </Fact>
+
+  </Facts>
+</FactDictionary>

@@ -2,15 +2,54 @@ import * as fg from '../fg.js'
 
 let factGraph
 
+/**
+ * Combines multiple fact dictionary XML files into a single XML string.
+ * Takes the Meta from the first file and merges all Facts sections.
+ */
+function combineFactDictionaries(...xmlStrings) {
+  const parser = new DOMParser()
+
+  // Parse the first XML to get the base structure
+  const baseDoc = parser.parseFromString(xmlStrings[0], 'text/xml')
+  const baseFacts = baseDoc.querySelector('Facts')
+
+  // Extract facts from all additional XML files
+  for (let i = 1; i < xmlStrings.length; i++) {
+    const doc = parser.parseFromString(xmlStrings[i], 'text/xml')
+    const facts = doc.querySelectorAll('Facts > Fact')
+
+    // Append each fact to the base Facts section
+    facts.forEach(fact => {
+      baseFacts.appendChild(fact.cloneNode(true))
+    })
+  }
+
+  // Serialize back to XML string
+  const serializer = new XMLSerializer()
+  return serializer.serializeToString(baseDoc)
+}
+
 // Load the Credit Calculator fact dictionary on page load
 window.addEventListener('DOMContentLoaded', async () => {
   try {
-    // Fetch the credit-calc facts XML file
-    const response = await fetch('./credit-calc-facts.xml')
-    const xmlText = await response.text()
+    // Fetch multiple fact dictionary XML files
+    const [demographicsResponse, eitcResponse, ctcResponse] = await Promise.all([
+      fetch('./facts/credit-calc.xml'),      // Shared demographics
+      fetch('./facts/federal-eitc.xml'),     // EITC-specific facts
+      fetch('./facts/federal-ctc.xml')       // CTC-specific facts
+    ])
+
+    const [demographicsXml, eitcXml, ctcXml] = await Promise.all([
+      demographicsResponse.text(),
+      eitcResponse.text(),
+      ctcResponse.text()
+    ])
+
+    // Combine the XML files
+    const combinedXml = combineFactDictionaries(demographicsXml, eitcXml, ctcXml)
 
     // Initialize the fact dictionary and graph
-    const factDictionary = fg.FactDictionaryFactory.importFromXml(xmlText)
+    const factDictionary = fg.FactDictionaryFactory.importFromXml(combinedXml)
     factGraph = fg.GraphFactory.apply(factDictionary)
 
     console.log('Credit Calculator Fact Graph loaded successfully')
@@ -256,10 +295,15 @@ function resetForm() {
 
   // Recreate the graph to clear all data
   if (factGraph) {
-    fetch('./credit-calc-facts.xml')
-      .then(response => response.text())
-      .then(xmlText => {
-        const factDictionary = fg.FactDictionaryFactory.importFromXml(xmlText)
+    Promise.all([
+      fetch('./facts/credit-calc.xml'),
+      fetch('./facts/federal-eitc.xml'),
+      fetch('./facts/federal-ctc.xml')
+    ])
+      .then(responses => Promise.all(responses.map(r => r.text())))
+      .then(xmlTexts => {
+        const combinedXml = combineFactDictionaries(...xmlTexts)
+        const factDictionary = fg.FactDictionaryFactory.importFromXml(combinedXml)
         factGraph = fg.GraphFactory.apply(factDictionary)
       })
       .catch(error => {
