@@ -2,6 +2,17 @@
 <FactDictionary>
   <Facts>
 
+  <!-- ==================================================== -->
+  <!-- FED CTC MAX REFUNDABLE AMT CONSTANT (2025 Tax Year)  -->
+  <!-- ==================================================== -->
+  <Fact path="/federalCtcMaxRefundAmountPerChild">
+    <Name>Federal CTC Maximum Refundable Amount Per Child</Name>
+    <TaxYear>2025</TaxYear>
+    <Derived>
+      <Dollar>1700</Dollar>
+    </Derived>
+  </Fact>
+
   <!-- ============================================= -->
   <!-- CALCULATE DERIVED FACT FOR FED CTC ELIGIBILTY -->
   <!-- This iteration assumes that all qualifying    -->
@@ -31,6 +42,41 @@
           <Then>
             <!-- Only primary filer needs valid SSN for other filing statuses -->
             <Dependency path="/primaryFilerHasValidSSN"/>
+          </Then>
+        </Case>
+      </Switch>
+    </Derived>
+  </Fact>
+
+  <!-- ============================================== -->
+  <!-- MAXIMUM REFUNDABLE FEDERAL CTC AMOUNT          -->
+  <!-- ============================================== -->
+  <Fact path="/federalCtcMaxRefundableAmount">
+    <Name>Maximum Refundable Federal CTC Amount</Name>
+    <Description>The maximum refundable federal CTC amount based on eligibility and number of qualifying children. Returns $0 if not eligible.</Description>
+    <TaxYear>2025</TaxYear>
+    <Derived>
+      <Switch>
+        <!-- Check if filer has valid IDs for federal CTC -->
+        <Case>
+          <When>
+            <Dependency path="/filersHaveValidIdsForFederalCtc"/>
+          </When>
+          <Then>
+            <!-- Eligible - multiply max refundable amount per child by number of children -->
+            <Multiply>
+              <Dependency path="/federalCtcMaxRefundAmountPerChild"/>
+              <Dependency path="/numQualifyingChildren"/>
+            </Multiply>
+          </Then>
+        </Case>
+        <!-- Not eligible - return $0 -->
+        <Case>
+          <When>
+            <True/>
+          </When>
+          <Then>
+            <Dollar>0</Dollar>
           </Then>
         </Case>
       </Switch>
