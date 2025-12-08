@@ -190,9 +190,9 @@
     </Derived>
   </Fact>
 
-  <!-- ================================================ -->
+  <!-- ================================================== -->
   <!-- CALCULATE DERIVED FACT FOR SSN FED EITC ELIGIBILTY -->
-  <!-- ================================================ -->
+  <!-- ================================================== -->
   <Fact path="/filersHaveValidIdsForFederalEitc">
     <Name>Filers Have Valid SSNs for Federal EITC</Name>
     <Description>Filer(s) have SSN to qualify for federal EITC</Description>
@@ -277,9 +277,9 @@
     </Writable>
   </Fact>
 
-  <!-- ============================================ -->
-  <!-- INCOME LIMIT CONSTANTS (2025 Tax Year) -->
-  <!-- ============================================ -->
+  <!-- ================================================ -->
+  <!-- FED EITC INCOME LIMIT CONSTANTS (2025 Tax Year)  -->
+  <!-- ================================================ -->
   <Fact path="/eitcInvestmentIncomeLimit">
     <Name>EITC Investment Income Limit</Name>
     <Description>Maximum investment income allowed for EITC eligibility (2025)</Description>
@@ -350,6 +350,41 @@
     <TaxYear>2025</TaxYear>
     <Derived>
       <Dollar>61555</Dollar>
+    </Derived>
+  </Fact>
+
+  <!-- ============================================== -->
+  <!-- FED EITC MAX CREDIT CONSTANTS (2025 Tax Year)  -->
+  <!-- ============================================== -->
+  <Fact path="/eitcCreditLimitWith0Children">
+    <Name>EITC Credit Limit (0 Children)</Name>
+    <TaxYear>2025</TaxYear>
+    <Derived>
+      <Dollar>649</Dollar>
+    </Derived>
+  </Fact>
+
+  <Fact path="/eitcCreditLimitWith1Child">
+    <Name>EITC Credit Limit (1 Child)</Name>
+    <TaxYear>2025</TaxYear>
+    <Derived>
+      <Dollar>4328</Dollar>
+    </Derived>
+  </Fact>
+
+  <Fact path="/eitcCreditLimitWith2Children">
+    <Name>EITC Credit Limit (2 Children)</Name>
+    <TaxYear>2025</TaxYear>
+    <Derived>
+      <Dollar>7152</Dollar>
+    </Derived>
+  </Fact>
+
+  <Fact path="/eitcCreditLimitWith3OrMoreChildren">
+    <Name>EITC Credit Limit (3+ Children)</Name>
+    <TaxYear>2025</TaxYear>
+    <Derived>
+      <Dollar>8046</Dollar>
     </Derived>
   </Fact>
 
