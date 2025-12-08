@@ -129,6 +129,8 @@ function checkEligibility() {
     const fedEitcIdCheck = factGraph.get('/filersHaveValidIdsForFederalEitc')
     const fedCtcIdCheck = factGraph.get('/filersHaveValidIdsForFederalCtc')
     const eitcIncomeLimit = factGraph.get('/eitcIncomeLimit')
+    const federalEitcMaxAmount = factGraph.get('/federalEitcMaxAmount')
+    const federalCtcMaxRefundableAmount = factGraph.get('/federalCtcMaxRefundableAmount')
 
     // Note: AGI is currently hardcoded to $25,000 in the fact dictionary
     // When we add AGI as a writable field, we'll check against it
@@ -139,7 +141,9 @@ function checkEligibility() {
       fedEitcIdCheck: extractValue(fedEitcIdCheck),
       fedCtcIdCheck: extractValue(fedCtcIdCheck),
       eitcIncomeLimit: extractValue(eitcIncomeLimit),
-      adjustedGrossIncome: extractValue(adjustedGrossIncome)
+      adjustedGrossIncome: extractValue(adjustedGrossIncome),
+      federalEitcMaxAmount: extractValue(federalEitcMaxAmount),
+      federalCtcMaxRefundableAmount: extractValue(federalCtcMaxRefundableAmount)
     })
 
     // Display graph JSON
@@ -180,12 +184,17 @@ function displayResults(results) {
   const resultCard = document.getElementById('result-card')
   const statusIcon = document.getElementById('status-icon')
   const statusText = document.getElementById('status-text')
+  const creditAmountDiv = document.getElementById('credit-amount')
   const failureReasonDiv = document.getElementById('failure-reason')
 
   // Display main result
   // For now, we'll show a summary based on the checks
   const fedEitcPass = results.fedEitcIdCheck === true || results.fedEitcIdCheck === 'true'
   const fedCtcPass = results.fedCtcIdCheck === true || results.fedCtcIdCheck === 'true'
+
+  // Display the federal EITC and CTC max amounts
+  const eitcAmount = typeof results.federalEitcMaxAmount === 'number' ? results.federalEitcMaxAmount : parseFloat(results.federalEitcMaxAmount) || 0
+  const ctcAmount = typeof results.federalCtcMaxRefundableAmount === 'number' ? results.federalCtcMaxRefundableAmount : parseFloat(results.federalCtcMaxRefundableAmount) || 0
 
   if (fedEitcPass || fedCtcPass) {
     resultCard.className = 'result-card qualified'
@@ -199,11 +208,28 @@ function displayResults(results) {
       message = '<h3>You may qualify for CTC!</h3>'
     }
     statusText.innerHTML = message
+
+    // Display max credit amounts
+    const creditParts = []
+    if (eitcAmount > 0) {
+      creditParts.push(`Federal EITC: ${formatCurrency(eitcAmount)}`)
+    }
+    if (ctcAmount > 0) {
+      creditParts.push(`Federal Refundable CTC: ${formatCurrency(ctcAmount)}`)
+    }
+
+    if (creditParts.length > 0) {
+      creditAmountDiv.innerHTML = creditParts.join('<br>')
+    } else {
+      creditAmountDiv.textContent = ''
+    }
+
     failureReasonDiv.textContent = 'Note: Additional eligibility criteria apply. This is a preliminary check based on tax ID requirements.'
   } else {
     resultCard.className = 'result-card not-qualified'
     statusIcon.textContent = '✗'
     statusText.innerHTML = '<h3>Tax ID Requirements Not Met</h3>'
+    creditAmountDiv.textContent = formatCurrency(0)
     failureReasonDiv.textContent = 'Based on your tax ID type and filing status, you do not meet the preliminary requirements for these credits.'
   }
 
