@@ -2,7 +2,7 @@
 <FactDictionary>
   <Meta>
     <Version>1.0.0</Version>
-    <TaxYear>2024</TaxYear>
+    <TaxYear>2025</TaxYear>
   </Meta>
   <Facts>
 
@@ -278,78 +278,78 @@
   </Fact>
 
   <!-- ============================================ -->
-  <!-- INCOME LIMIT CONSTANTS (2024 Tax Year) -->
+  <!-- INCOME LIMIT CONSTANTS (2025 Tax Year) -->
   <!-- ============================================ -->
   <Fact path="/eitcInvestmentIncomeLimit">
     <Name>EITC Investment Income Limit</Name>
-    <Description>Maximum investment income allowed for EITC eligibility (2024)</Description>
-    <TaxYear>2024</TaxYear>
+    <Description>Maximum investment income allowed for EITC eligibility (2025)</Description>
+    <TaxYear>2025</TaxYear>
     <Derived>
-      <Dollar>11600</Dollar>
+      <Dollar>11950</Dollar>
     </Derived>
   </Fact>
 
   <Fact path="/eitcMfjLimitWith0Children">
     <Name>EITC Income Limit (MFJ, 0 Children)</Name>
-    <TaxYear>2024</TaxYear>
+    <TaxYear>2025</TaxYear>
     <Derived>
-      <Dollar>25511</Dollar>
+      <Dollar>26214</Dollar>
     </Derived>
   </Fact>
 
   <Fact path="/eitcSelfLimitWith0Children">
     <Name>EITC Income Limit (Other, 0 Children)</Name>
-    <TaxYear>2024</TaxYear>
+    <TaxYear>2025</TaxYear>
     <Derived>
-      <Dollar>18591</Dollar>
+      <Dollar>19104</Dollar>
     </Derived>
   </Fact>
 
   <Fact path="/eitcMfjLimitWith1Child">
     <Name>EITC Income Limit (MFJ, 1 Child)</Name>
-    <TaxYear>2024</TaxYear>
+    <TaxYear>2025</TaxYear>
     <Derived>
-      <Dollar>56004</Dollar>
+      <Dollar>57554</Dollar>
     </Derived>
   </Fact>
 
   <Fact path="/eitcSelfLimitWith1Child">
     <Name>EITC Income Limit (Other, 1 Child)</Name>
-    <TaxYear>2024</TaxYear>
+    <TaxYear>2025</TaxYear>
     <Derived>
-      <Dollar>49084</Dollar>
+      <Dollar>50434</Dollar>
     </Derived>
   </Fact>
 
   <Fact path="/eitcMfjLimitWith2Children">
     <Name>EITC Income Limit (MFJ, 2 Children)</Name>
-    <TaxYear>2024</TaxYear>
+    <TaxYear>2025</TaxYear>
     <Derived>
-      <Dollar>62688</Dollar>
+      <Dollar>64430</Dollar>
     </Derived>
   </Fact>
 
   <Fact path="/eitcSelfLimitWith2Children">
     <Name>EITC Income Limit (Other, 2 Children)</Name>
-    <TaxYear>2024</TaxYear>
+    <TaxYear>2025</TaxYear>
     <Derived>
-      <Dollar>55768</Dollar>
+      <Dollar>57310</Dollar>
     </Derived>
   </Fact>
 
   <Fact path="/eitcMfjLimitWith3OrMoreChildren">
     <Name>EITC Income Limit (MFJ, 3+ Children)</Name>
-    <TaxYear>2024</TaxYear>
+    <TaxYear>2025</TaxYear>
     <Derived>
-      <Dollar>66819</Dollar>
+      <Dollar>68675</Dollar>
     </Derived>
   </Fact>
 
   <Fact path="/eitcSelfLimitWith3OrMoreChildren">
     <Name>EITC Income Limit (Other, 3+ Children)</Name>
-    <TaxYear>2024</TaxYear>
+    <TaxYear>2025</TaxYear>
     <Derived>
-      <Dollar>59899</Dollar>
+      <Dollar>61555</Dollar>
     </Derived>
   </Fact>
 
