@@ -14,6 +14,9 @@ this is a general-purpose form for loading any fact dictionary and manually sett
 4. **Dinner check splitter demo** (`dinner_check_demo/dinner-check-demo.html`) - Bill-splitting calculator with birthday rule (intended to demo how the Fact Graph engine can work with
 non-tax fact dictionaries). See [dinner_check_demo/DINNER-CHECK-README.md](./dinner_check_demo/DINNER-CHECK-README.md) for details.
 
+4. **Tax credit calculator** (`credit_calc/credit-calc.html`) - Estimates
+combined amount of federal and state refundable tax credits. See [credit_calc/CREDIT-CALC-README.md](./credit_calc/CREDIT-CALC-README.md) for details.
+
 ## How to Run
 
 Assuming that your local machine has Python installed, you can use Python to
@@ -29,4 +32,4 @@ create a simple web server to view the demos:
    - AGI Calculator: [http://localhost:8000/demo/agi_demo/agi-demo.html](http://localhost:8000/demo/agi_demo/agi-demo.html)
    - EITC Eligibility Checker: [http://localhost:8000/demo/eitc_demo/eitc-demo.html](http://localhost:8000/demo/eitc_demo/eitc-demo.html)
    - Dinner Check Splitter: [http://localhost:8000/demo/dinner_check_demo/dinner-check-demo.html](http://localhost:8000/demo/dinner_check_demo/dinner-check-demo.html)
-   - Tax Credit Calculator (WIP): [http://localhost:8000/demo/credit_calc/credit-calc-demo.html](http://localhost:8000/demo/credit_calc/credit-calc-demo.html)
+   - Tax Credit Calculator (WIP): [http://localhost:8000/demo/credit_calc/credit-calc-demo.html](http://localhost:8000/demo/credit_calc/credit-calc.html)
