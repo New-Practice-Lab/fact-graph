@@ -284,5 +284,91 @@
     </Derived>
   </Fact>
 
+  <!-- ============================================== -->
+  <!-- MAXIMUM FEDERAL EITC AMOUNT                    -->
+  <!-- ============================================== -->
+  <Fact path="/federalEitcMaxAmount">
+    <Name>Maximum Federal EITC Amount</Name>
+    <Description>The maximum federal EITC amount based on eligibility and number of qualifying children. Returns $0 if not eligible.</Description>
+    <TaxYear>2025</TaxYear>
+    <Derived>
+      <Switch>
+        <!-- Check if filer has valid IDs for federal EITC -->
+        <Case>
+          <When>
+            <Dependency path="/filersHaveValidIdsForFederalEitc"/>
+          </When>
+          <Then>
+            <!-- Eligible - return credit amount based on number of children -->
+            <Switch>
+              <Case>
+                <When>
+                  <GreaterThanOrEqual>
+                    <Left>
+                      <Dependency path="/numQualifyingChildren"/>
+                    </Left>
+                    <Right>
+                      <Int>3</Int>
+                    </Right>
+                  </GreaterThanOrEqual>
+                </When>
+                <Then>
+                  <Dependency path="/eitcCreditLimitWith3OrMoreChildren"/>
+                </Then>
+              </Case>
+              <Case>
+                <When>
+                  <Equal>
+                    <Left>
+                      <Dependency path="/numQualifyingChildren"/>
+                    </Left>
+                    <Right>
+                      <Int>2</Int>
+                    </Right>
+                  </Equal>
+                </When>
+                <Then>
+                  <Dependency path="/eitcCreditLimitWith2Children"/>
+                </Then>
+              </Case>
+              <Case>
+                <When>
+                  <Equal>
+                    <Left>
+                      <Dependency path="/numQualifyingChildren"/>
+                    </Left>
+                    <Right>
+                      <Int>1</Int>
+                    </Right>
+                  </Equal>
+                </When>
+                <Then>
+                  <Dependency path="/eitcCreditLimitWith1Child"/>
+                </Then>
+              </Case>
+              <Case>
+                <When>
+                  <True/>
+                </When>
+                <Then>
+                  <Dependency path="/eitcCreditLimitWith0Children"/>
+                </Then>
+              </Case>
+            </Switch>
+          </Then>
+        </Case>
+        <!-- Not eligible - return $0 -->
+        <Case>
+          <When>
+            <True/>
+          </When>
+          <Then>
+            <Dollar>0</Dollar>
+          </Then>
+        </Case>
+      </Switch>
+    </Derived>
+  </Fact>
+
   </Facts>
 </FactDictionary>
