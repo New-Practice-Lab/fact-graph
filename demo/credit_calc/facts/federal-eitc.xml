@@ -284,6 +284,72 @@
     </Derived>
   </Fact>
 
+  <!-- ======================================================= -->
+  <!-- ESTIMATED FEDERAL EITC (without eligibility check)      -->
+  <!-- ======================================================= -->
+  <Fact path="/federalEitcEstimatedAmount">
+    <Name>Estimated Federal EITC Amount</Name>
+    <Description>The estimated federal EITC amount based on number of qualifying children, regardless of tax ID eligibility.</Description>
+    <TaxYear>2025</TaxYear>
+    <Derived>
+      <Switch>
+        <Case>
+          <When>
+            <GreaterThanOrEqual>
+              <Left>
+                <Dependency module="creditCalc" path="/numQualifyingChildren"/>
+              </Left>
+              <Right>
+                <Int>3</Int>
+              </Right>
+            </GreaterThanOrEqual>
+          </When>
+          <Then>
+            <Dependency path="/eitcCreditLimitWith3OrMoreChildren"/>
+          </Then>
+        </Case>
+        <Case>
+          <When>
+            <Equal>
+              <Left>
+                <Dependency module="creditCalc" path="/numQualifyingChildren"/>
+              </Left>
+              <Right>
+                <Int>2</Int>
+              </Right>
+            </Equal>
+          </When>
+          <Then>
+            <Dependency path="/eitcCreditLimitWith2Children"/>
+          </Then>
+        </Case>
+        <Case>
+          <When>
+            <Equal>
+              <Left>
+                <Dependency module="creditCalc" path="/numQualifyingChildren"/>
+              </Left>
+              <Right>
+                <Int>1</Int>
+              </Right>
+            </Equal>
+          </When>
+          <Then>
+            <Dependency path="/eitcCreditLimitWith1Child"/>
+          </Then>
+        </Case>
+        <Case>
+          <When>
+            <True/>
+          </When>
+          <Then>
+            <Dependency path="/eitcCreditLimitWith0Children"/>
+          </Then>
+        </Case>
+      </Switch>
+    </Derived>
+  </Fact>
+
   <!-- ============================================== -->
   <!-- MAXIMUM FEDERAL EITC AMOUNT                    -->
   <!-- ============================================== -->
@@ -299,62 +365,8 @@
             <Dependency path="/filersHaveValidIdsForFederalEitc"/>
           </When>
           <Then>
-            <!-- Eligible - return credit amount based on number of children -->
-            <Switch>
-              <Case>
-                <When>
-                  <GreaterThanOrEqual>
-                    <Left>
-                      <Dependency module="creditCalc" path="/numQualifyingChildren"/>
-                    </Left>
-                    <Right>
-                      <Int>3</Int>
-                    </Right>
-                  </GreaterThanOrEqual>
-                </When>
-                <Then>
-                  <Dependency path="/eitcCreditLimitWith3OrMoreChildren"/>
-                </Then>
-              </Case>
-              <Case>
-                <When>
-                  <Equal>
-                    <Left>
-                      <Dependency module="creditCalc" path="/numQualifyingChildren"/>
-                    </Left>
-                    <Right>
-                      <Int>2</Int>
-                    </Right>
-                  </Equal>
-                </When>
-                <Then>
-                  <Dependency path="/eitcCreditLimitWith2Children"/>
-                </Then>
-              </Case>
-              <Case>
-                <When>
-                  <Equal>
-                    <Left>
-                      <Dependency module="creditCalc" path="/numQualifyingChildren"/>
-                    </Left>
-                    <Right>
-                      <Int>1</Int>
-                    </Right>
-                  </Equal>
-                </When>
-                <Then>
-                  <Dependency path="/eitcCreditLimitWith1Child"/>
-                </Then>
-              </Case>
-              <Case>
-                <When>
-                  <True/>
-                </When>
-                <Then>
-                  <Dependency path="/eitcCreditLimitWith0Children"/>
-                </Then>
-              </Case>
-            </Switch>
+            <!-- Eligible - return estimated amount -->
+            <Dependency path="/federalEitcEstimatedAmount"/>
           </Then>
         </Case>
         <!-- Not eligible - return $0 -->

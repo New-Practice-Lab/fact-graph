@@ -46,20 +46,22 @@ function combineFactDictionaries(...xmlStrings) {
 window.addEventListener('DOMContentLoaded', async () => {
   try {
     // Fetch multiple fact dictionary XML files
-    const [demographicsResponse, eitcResponse, ctcResponse] = await Promise.all([
+    const [demographicsResponse, eitcResponse, ctcResponse, mdEitcResponse] = await Promise.all([
       fetch('./facts/credit-calc.xml'),      // Shared demographics
       fetch('./facts/federal-eitc.xml'),     // EITC-specific facts
-      fetch('./facts/federal-ctc.xml')       // CTC-specific facts
+      fetch('./facts/federal-ctc.xml'),      // CTC-specific facts
+      fetch('./facts/md-eitc.xml')           // Maryland EITC-specific facts
     ])
 
-    const [demographicsXml, eitcXml, ctcXml] = await Promise.all([
+    const [demographicsXml, eitcXml, ctcXml, mdEitcXml] = await Promise.all([
       demographicsResponse.text(),
       eitcResponse.text(),
-      ctcResponse.text()
+      ctcResponse.text(),
+      mdEitcResponse.text()
     ])
 
     // Combine the XML files
-    const combinedXml = combineFactDictionaries(demographicsXml, eitcXml, ctcXml)
+    const combinedXml = combineFactDictionaries(demographicsXml, eitcXml, ctcXml, mdEitcXml)
 
     // Initialize the fact dictionary and graph
     const factDictionary = fg.FactDictionaryFactory.importFromXml(combinedXml)
@@ -141,9 +143,11 @@ function checkEligibility() {
     // Get computed results
     const fedEitcIdCheck = factGraph.get('/filersHaveValidIdsForFederalEitc')
     const fedCtcIdCheck = factGraph.get('/filersHaveValidIdsForFederalCtc')
+    const mdEitcIdCheck = factGraph.get('/filersHaveValidIdsForMdEitc')
     const eitcIncomeLimit = factGraph.get('/eitcIncomeLimit')
     const federalEitcMaxAmount = factGraph.get('/federalEitcMaxAmount')
     const federalCtcMaxRefundableAmount = factGraph.get('/federalCtcMaxRefundableAmount')
+    const mdEitcAmount = factGraph.get('/mdEitcAmount')
 
     // Note: AGI is currently hardcoded to $25,000 in the fact dictionary
     // When we add AGI as a writable field, we'll check against it
@@ -151,12 +155,15 @@ function checkEligibility() {
 
     // Display results
     displayResults({
+      filingState: filingState,
       fedEitcIdCheck: extractValue(fedEitcIdCheck),
       fedCtcIdCheck: extractValue(fedCtcIdCheck),
+      mdEitcIdCheck: extractValue(mdEitcIdCheck),
       eitcIncomeLimit: extractValue(eitcIncomeLimit),
       adjustedGrossIncome: extractValue(adjustedGrossIncome),
       federalEitcMaxAmount: extractValue(federalEitcMaxAmount),
-      federalCtcMaxRefundableAmount: extractValue(federalCtcMaxRefundableAmount)
+      federalCtcMaxRefundableAmount: extractValue(federalCtcMaxRefundableAmount),
+      mdEitcAmount: extractValue(mdEitcAmount)
     })
 
     // Display graph JSON
@@ -204,12 +211,17 @@ function displayResults(results) {
   // For now, we'll show a summary based on the checks
   const fedEitcPass = results.fedEitcIdCheck === true || results.fedEitcIdCheck === 'true'
   const fedCtcPass = results.fedCtcIdCheck === true || results.fedCtcIdCheck === 'true'
+  const mdEitcPass = results.mdEitcIdCheck === true || results.mdEitcIdCheck === 'true'
 
   // Display the federal EITC and CTC max amounts
   const eitcAmount = typeof results.federalEitcMaxAmount === 'number' ? results.federalEitcMaxAmount : parseFloat(results.federalEitcMaxAmount) || 0
   const ctcAmount = typeof results.federalCtcMaxRefundableAmount === 'number' ? results.federalCtcMaxRefundableAmount : parseFloat(results.federalCtcMaxRefundableAmount) || 0
+  const mdEitcAmount = typeof results.mdEitcAmount === 'number' ? results.mdEitcAmount : parseFloat(results.mdEitcAmount) || 0
 
-  if (fedEitcPass || fedCtcPass) {
+  // Check if any credits qualify
+  const anyCreditsQualify = fedEitcPass || fedCtcPass || (results.filingState === 'MD' && mdEitcPass)
+
+  if (anyCreditsQualify) {
     resultCard.className = 'result-card qualified'
     statusIcon.textContent = '✓'
     let message = '<h3>Preliminary Tax ID Checks Passed!</h3>'
@@ -231,13 +243,23 @@ function displayResults(results) {
       creditParts.push(`Federal Refundable CTC: ${formatCurrency(ctcAmount)}`)
     }
 
+    // Display Maryland EITC if Maryland is selected and eligible
+    if (results.filingState === 'MD' && mdEitcAmount > 0) {
+      creditParts.push(`Maryland EITC: ${formatCurrency(mdEitcAmount)}`)
+    }
+
     if (creditParts.length > 0) {
       creditAmountDiv.innerHTML = creditParts.join('<br>')
     } else {
       creditAmountDiv.textContent = ''
     }
 
-    failureReasonDiv.textContent = 'Note: Additional eligibility criteria apply. This is a preliminary check based on tax ID requirements.'
+    // Add special note for ITIN holders in Maryland
+    let noteText = 'Note: Additional eligibility criteria apply. This is a preliminary check based on tax ID requirements.'
+    if (results.filingState === 'MD' && mdEitcPass && !fedEitcPass) {
+      noteText += ' ITIN holders qualify for Maryland EITC but not Federal EITC.'
+    }
+    failureReasonDiv.textContent = noteText
   } else {
     resultCard.className = 'result-card not-qualified'
     statusIcon.textContent = '✗'
@@ -249,6 +271,15 @@ function displayResults(results) {
   // Display detail checks
   displayCheck('fed-eitc-id-check', results.fedEitcIdCheck)
   displayCheck('fed-ctc-id-check', results.fedCtcIdCheck)
+
+  // Show/hide and display Maryland EITC check based on selected state
+  const mdEitcCheckItem = document.getElementById('md-eitc-id-check-item')
+  if (results.filingState === 'MD') {
+    mdEitcCheckItem.style.display = 'block'
+    displayCheck('md-eitc-id-check', results.mdEitcIdCheck)
+  } else {
+    mdEitcCheckItem.style.display = 'none'
+  }
 
   // Display income limit
   const incomeLimitElement = document.getElementById('eitc-income-limit')
@@ -337,7 +368,8 @@ function resetForm() {
     Promise.all([
       fetch('./facts/credit-calc.xml'),
       fetch('./facts/federal-eitc.xml'),
-      fetch('./facts/federal-ctc.xml')
+      fetch('./facts/federal-ctc.xml'),
+      fetch('./facts/md-eitc.xml')
     ])
       .then(responses => Promise.all(responses.map(r => r.text())))
       .then(xmlTexts => {

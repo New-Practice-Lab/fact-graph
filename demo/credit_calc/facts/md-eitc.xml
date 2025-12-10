@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FactDictionaryModule>
+  <Facts>
+
+  <!-- ======================================================= -->
+  <!-- CALCULATE DERIVED FACT FOR SSN/ITIN MD EITC ELIGIBILTY -->
+  <!-- ======================================================= -->
+  <Fact path="/primaryFilerHasValidIdForMdEitc">
+    <Name>Primary Filer Has Valid SSN or ITIN for MD EITC</Name>
+    <Description>Primary filer has SSN or ITIN to qualify for Maryland EITC</Description>
+    <Derived>
+      <Any>
+        <Dependency module="creditCalc" path="/primaryFilerHasValidSSN"/>
+        <Dependency module="creditCalc" path="/primaryFilerHasValidITIN"/>
+      </Any>
+    </Derived>
+  </Fact>
+
+  <Fact path="/secondaryFilerHasValidIdForMdEitc">
+    <Name>Secondary Filer Has Valid SSN or ITIN for MD EITC</Name>
+    <Description>Secondary filer has SSN or ITIN to qualify for Maryland EITC</Description>
+    <Derived>
+      <Any>
+        <Dependency module="creditCalc" path="/secondaryFilerHasValidSSN"/>
+        <Dependency module="creditCalc" path="/secondaryFilerHasValidITIN"/>
+      </Any>
+    </Derived>
+  </Fact>
+
+  <Fact path="/filersHaveValidIdsForMdEitc">
+    <Name>Filers Have Valid IDs for Maryland EITC</Name>
+    <Description>Filer(s) have SSN or ITIN to qualify for Maryland EITC</Description>
+    <Derived>
+      <Switch>
+        <Case>
+          <When>
+            <Dependency module="creditCalc" path="/isFilingStatusMFJ"/>
+          </When>
+          <Then>
+            <!-- When MFJ, both filers need SSN or ITIN for Maryland EITC -->
+            <All>
+              <Dependency path="/primaryFilerHasValidIdForMdEitc"/>
+              <Dependency path="/secondaryFilerHasValidIdForMdEitc"/>
+            </All>
+          </Then>
+        </Case>
+        <Case>
+          <When>
+            <True/>
+          </When>
+          <Then>
+            <!-- Only primary filer needs valid SSN or ITIN for other filing statuses -->
+            <Dependency path="/primaryFilerHasValidIdForMdEitc"/>
+          </Then>
+        </Case>
+      </Switch>
+    </Derived>
+  </Fact>
+
+  <!-- ================================================ -->
+  <!-- MARYLAND EITC CALCULATION (2025 Tax Year)        -->
+  <!-- ================================================ -->
+  <Fact path="/mdEitcAmount">
+    <Name>Maryland EITC Amount</Name>
+    <Description>Maryland EITC is calculated as 50% of the estimated federal EITC amount for eligible filers (SSN or ITIN holders)</Description>
+    <TaxYear>2025</TaxYear>
+    <Derived>
+      <Switch>
+        <Case>
+          <When>
+            <Dependency path="/filersHaveValidIdsForMdEitc"/>
+          </When>
+          <Then>
+            <!-- Eligible - calculate 50% of estimated federal EITC -->
+            <Multiply>
+              <Dependency module="creditCalc" path="/federalEitcEstimatedAmount"/>
+              <Rational>1/2</Rational>
+            </Multiply>
+          </Then>
+        </Case>
+        <Case>
+          <When>
+            <True/>
+          </When>
+          <Then>
+            <!-- Not eligible - return $0 -->
+            <Dollar>0</Dollar>
+          </Then>
+        </Case>
+      </Switch>
+    </Derived>
+  </Fact>
+
+  </Facts>
+</FactDictionaryModule>
