@@ -655,6 +655,7 @@ General usage:
 ## References
 
 - **Architecture ADR**: `docs/fact-graph-3.1-adr.md`
+- **CompNode Reference**: `docs/compnode-reference.md` - Complete guide to all valid CompNode types for XML fact dictionaries
 - **Contributing Guide**: `CONTRIBUTING.md`
 - **Onboarding Guide**: `ONBOARDING.md`
 - **ScalaTest Docs**: https://www.scalatest.org/
