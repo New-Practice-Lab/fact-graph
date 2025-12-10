@@ -224,15 +224,7 @@ function displayResults(results) {
   if (anyCreditsQualify) {
     resultCard.className = 'result-card qualified'
     statusIcon.textContent = '✓'
-    let message = '<h3>Preliminary Tax ID Checks Passed!</h3>'
-    if (fedEitcPass && fedCtcPass) {
-      message = '<h3>You may qualify for both EITC and CTC!</h3>'
-    } else if (fedEitcPass) {
-      message = '<h3>You may qualify for EITC!</h3>'
-    } else if (fedCtcPass) {
-      message = '<h3>You may qualify for CTC!</h3>'
-    }
-    statusText.innerHTML = message
+    statusText.innerHTML = ''
 
     // Display max credit amounts
     const creditParts = []
@@ -263,7 +255,7 @@ function displayResults(results) {
   } else {
     resultCard.className = 'result-card not-qualified'
     statusIcon.textContent = '✗'
-    statusText.innerHTML = '<h3>Tax ID Requirements Not Met</h3>'
+    statusText.innerHTML = ''
     creditAmountDiv.textContent = formatCurrency(0)
     failureReasonDiv.textContent = 'Based on your tax ID type and filing status, you do not meet the preliminary requirements for these credits.'
   }
@@ -280,29 +272,6 @@ function displayResults(results) {
   } else {
     mdEitcCheckItem.style.display = 'none'
   }
-
-  // Display income limit
-  const incomeLimitElement = document.getElementById('eitc-income-limit')
-  if (typeof results.eitcIncomeLimit === 'number' || !isNaN(parseFloat(results.eitcIncomeLimit))) {
-    incomeLimitElement.textContent = formatCurrency(parseFloat(results.eitcIncomeLimit))
-    incomeLimitElement.className = 'detail-value'
-  } else {
-    incomeLimitElement.textContent = '-'
-    incomeLimitElement.className = 'detail-value'
-  }
-
-  // Display AGI check (comparing hardcoded $25k AGI to limit)
-  const agiCheckElement = document.getElementById('eitc-agi-check')
-  if (typeof results.adjustedGrossIncome === 'number' && typeof results.eitcIncomeLimit === 'number') {
-    const belowLimit = results.adjustedGrossIncome < results.eitcIncomeLimit
-    displayCheck('eitc-agi-check', belowLimit)
-  } else if (!isNaN(parseFloat(results.adjustedGrossIncome)) && !isNaN(parseFloat(results.eitcIncomeLimit))) {
-    const belowLimit = parseFloat(results.adjustedGrossIncome) < parseFloat(results.eitcIncomeLimit)
-    displayCheck('eitc-agi-check', belowLimit)
-  } else {
-    agiCheckElement.textContent = `AGI: ${formatCurrency(25000)}`
-    agiCheckElement.className = 'detail-value'
-  }
 }
 
 function displayCheck(elementId, value) {
@@ -310,10 +279,10 @@ function displayCheck(elementId, value) {
   const boolValue = value === true || value === 'true'
 
   if (boolValue) {
-    element.textContent = 'Pass ✓'
+    element.textContent = 'Eligible ✓'
     element.className = 'detail-value pass'
   } else if (value === false || value === 'false') {
-    element.textContent = 'Fail ✗'
+    element.textContent = 'Ineligible ✗'
     element.className = 'detail-value fail'
   } else {
     element.textContent = '-'
