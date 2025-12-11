@@ -19,17 +19,22 @@ combined amount of federal and state refundable tax credits. See [credit_calc/CR
 
 ## How to Run
 
-Assuming that your local machine has Python installed, you can use Python to
-create a simple web server to view the demos:
+### Development Server
 
-1. Start a local web server from the project root directory:
+For development, use the included development server that disables caching:
+
+1. Start the development server from the demo directory:
    ```bash
-   python3 -m http.server 8000
+   cd demo
+   python3 dev_server.py
    ```
 
 2. Open your browser to:
-   - Generic get/set demo: [http://localhost:8000/demo/get_set_demo/index.html](http://localhost:8000/demo/get_set_demo/index.html)
-   - AGI Calculator: [http://localhost:8000/demo/agi_demo/agi-demo.html](http://localhost:8000/demo/agi_demo/agi-demo.html)
-   - EITC Eligibility Checker: [http://localhost:8000/demo/eitc_demo/eitc-demo.html](http://localhost:8000/demo/eitc_demo/eitc-demo.html)
-   - Dinner Check Splitter: [http://localhost:8000/demo/dinner_check_demo/dinner-check-demo.html](http://localhost:8000/demo/dinner_check_demo/dinner-check-demo.html)
-   - Tax Credit Calculator (WIP): [http://localhost:8000/demo/credit_calc/credit-calc-demo.html](http://localhost:8000/demo/credit_calc/credit-calc.html)
+   - Generic get/set demo: [http://localhost:8000/get_set_demo/index.html](http://localhost:8000/get_set_demo/index.html)
+   - AGI Calculator: [http://localhost:8000/agi_demo/agi-demo.html](http://localhost:8000/agi_demo/agi-demo.html)
+   - EITC Eligibility Checker: [http://localhost:8000/eitc_demo/eitc-demo.html](http://localhost:8000/eitc_demo/eitc-demo.html)
+   - Dinner Check Splitter: [http://localhost:8000/dinner_check_demo/dinner-check-demo.html](http://localhost:8000/dinner_check_demo/dinner-check-demo.html)
+   - Tax Credit Calculator: [http://localhost:8000/credit_calc/credit-calc.html](http://localhost:8000/credit_calc/credit-calc.html)
+
+The development server adds `Cache-Control` headers to prevent browser caching, so you'll see changes immediately without manually clearing your cache.
+
