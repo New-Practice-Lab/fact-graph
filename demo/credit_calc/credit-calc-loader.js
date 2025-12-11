@@ -247,7 +247,7 @@ function displayResults(results) {
     }
 
     // Add special note for ITIN holders in Maryland
-    let noteText = 'Note: Additional eligibility criteria apply. This is a preliminary check based on tax ID requirements.'
+    let noteText = 'Note: Additional eligibility criteria apply.'
     if (results.filingState === 'MD' && mdEitcPass && !fedEitcPass) {
       noteText += ' ITIN holders qualify for Maryland EITC but not Federal EITC.'
     }
