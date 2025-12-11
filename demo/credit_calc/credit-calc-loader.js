@@ -202,8 +202,6 @@ function displayResults(results) {
   document.getElementById('results').classList.add('show')
 
   const resultCard = document.getElementById('result-card')
-  const statusIcon = document.getElementById('status-icon')
-  const statusText = document.getElementById('status-text')
   const creditAmountDiv = document.getElementById('credit-amount')
   const failureReasonDiv = document.getElementById('failure-reason')
 
@@ -223,8 +221,6 @@ function displayResults(results) {
 
   if (anyCreditsQualify) {
     resultCard.className = 'result-card qualified'
-    statusIcon.textContent = '✓'
-    statusText.innerHTML = ''
 
     // Display max credit amounts
     const creditParts = []
@@ -254,8 +250,6 @@ function displayResults(results) {
     failureReasonDiv.textContent = noteText
   } else {
     resultCard.className = 'result-card not-qualified'
-    statusIcon.textContent = '✗'
-    statusText.innerHTML = ''
     creditAmountDiv.textContent = formatCurrency(0)
     failureReasonDiv.textContent = 'Based on your tax ID type and filing status, you do not meet the preliminary requirements for these credits.'
   }

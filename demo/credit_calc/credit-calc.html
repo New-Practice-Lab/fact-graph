@@ -33,6 +33,7 @@
         .result-card h2 {
             color: white;
             border: none;
+            margin-top: 0;
             margin-bottom: 1rem;
             font-size: 2em;
         }
@@ -169,7 +170,7 @@
                     </div>
 
                     <div style="display: flex; gap: 1rem; margin-top: 2rem;">
-                        <button class="usa-button" type="submit">Check Eligibility</button>
+                        <button class="usa-button" type="submit">Estimate Credits</button>
                         <button class="usa-button usa-button--secondary" type="button" onclick="resetForm()">Reset Form</button>
                     </div>
                 </form>
@@ -177,10 +178,8 @@
 
             <section id="results" class="usa-section">
                 <div id="result-card" class="result-card">
-                    <h2>Tax Credit Eligibility Result</h2>
-                    <div class="status" id="status-icon"></div>
-                    <div id="status-text"></div>
-                    <div class="credit-amount" id="credit-amount" style="font-size: 2em; font-weight: bold; margin: 1rem 0;"></div>
+                    <h2>Tax Credit Estimate</h2>
+                    <div class="credit-amount" id="credit-amount" style="font-size: 1.5em; font-weight: bold; margin: 1rem 0;"></div>
                     <div class="reason" id="failure-reason"></div>
                 </div>
 
