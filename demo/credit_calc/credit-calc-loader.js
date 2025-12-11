@@ -224,19 +224,28 @@ function displayResults(results) {
 
     // Display max credit amounts
     const creditParts = []
+    let totalAmount = 0
+
     if (eitcAmount > 0) {
       creditParts.push(`Federal EITC: ${formatCurrency(eitcAmount)}`)
+      totalAmount += eitcAmount
     }
     if (ctcAmount > 0) {
       creditParts.push(`Federal Refundable CTC: ${formatCurrency(ctcAmount)}`)
+      totalAmount += ctcAmount
     }
 
     // Display Maryland EITC if Maryland is selected and eligible
     if (results.filingState === 'MD' && mdEitcAmount > 0) {
       creditParts.push(`Maryland EITC: ${formatCurrency(mdEitcAmount)}`)
+      totalAmount += mdEitcAmount
     }
 
     if (creditParts.length > 0) {
+      // Add total if there are multiple credits
+      if (creditParts.length > 1) {
+        creditParts.push(`<br><strong>Total: ${formatCurrency(totalAmount)}</strong>`)
+      }
       creditAmountDiv.innerHTML = creditParts.join('<br>')
     } else {
       creditAmountDiv.textContent = ''
